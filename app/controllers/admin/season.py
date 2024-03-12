@@ -138,7 +138,6 @@ class AdminSeasonController(Controller):
                 template_name="admin/partials/season-edit.html",
                 context={
                     "season": season,
-                    "show_end_date": True,
                     "leagues": leagues,
                 },
             )
@@ -162,6 +161,15 @@ class AdminSeasonController(Controller):
             data=data, item_id=data.id, auto_commit=True
         )  # write to database
         return Redirect(path=urls.ADMIN_SEASON)
+
+
+    @get(
+        [urls.ADMIN_SEASON_END_DATE],
+        status_code=HTTPStatus.OK,
+        name="get_season_end_date",
+    )
+    async def get_season_end_date(self, request: HTMXRequest) -> Template:
+        return htmx_template(template_name="admin/partials/season-edit.html", context={"show_end_date": True}, block_name="end_season")
 
     @post(
         [urls.ADMIN_SEASON_SEARCH],
