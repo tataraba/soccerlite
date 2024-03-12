@@ -2,7 +2,8 @@
 
 Hi! This repo is the backbone of a web app I am building for my local amateur soccer league. It is built using the [Litestar web framework](https://litestar.dev), and utilizes the [PyHAT](https://github.com/PyHAT-stack/awesome-python-htmx) stack. What this means is that the frontend is mostly handled by HTML and [htmx](https://htmx.org)*, and styling is included using [TailwindCSS](https://tailwindcss.com). Keep in mind that this site is being built specifically for the _Inland Empire Soccer League_, but you might be able to adapt it to your own purposes with some tweaks.
 
-* Minimal JavaScript is included using Alpine JS and the flatpickr (date selection) library.
+>**Note** Under the hood:
+> Minimal JavaScript is included using Alpine JS and the flatpickr (date selection) library.
 
 ## Getting Started
 
@@ -32,6 +33,14 @@ python -m litestar run --reload --debug
 (Using the `--reload` and `--debug` flags are optional, but I find them useful while developing.)
 
 That should send you over to http://127.0.0.1:8000 with a working copy of the site.
+
+Even better, if you have `just` installed, you can _just_ type:
+
+```sh
+just run
+```
+
+That is the equivalent of activating your environment and running the command above.
 
 >**Note** Under the hood:
 >
