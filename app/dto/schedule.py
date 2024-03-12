@@ -25,6 +25,7 @@ class ScheduleCreateDTO(SQLAlchemyDTO[Schedule]):
             "league",
             "season",
             "fixtures",
+            "standings",
         }
     )
 
