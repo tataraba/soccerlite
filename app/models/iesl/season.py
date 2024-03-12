@@ -19,8 +19,10 @@ __all__ = ["Season"]
 
 
 class Season(DatabaseModel, SlugKey):
-    """Inland Empire Soccer League Season is the parent model of the
-    League models (children). It defines the parameters of each season."""
+    """The Season table is the parent of a League or Leagues. It usually
+    defines a time frame for when the league will be active. Although a
+    `start_date` is required, it is not used to determine the start date
+    of a specific league, but it is used to sort seasons by date."""
 
     __table_args__ = {"comment": "Inland Empire Scores League Season"}
 
