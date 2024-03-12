@@ -57,9 +57,17 @@ alembic upgrade head
 Or... if you have `just` installed, you can type:
 
 ```sh
-just migrate MESSAGE
+just makemigrations MESSAGE
 ```
 That is the equivalent of the two commands above, where `MESSAGE` is the equivalent of `"your message here"` in the above example.
+
+If you just want to run the second command `alembic upgrade head`, then you can use:
+
+```sh
+just migrate
+```
+
+(Borrowing heavily from a Django namespace here, even if the functionality differs in some form or another. (Sorry, not _as familiar_ with Django commands.))
 
 ### Tailwind Stuff
 

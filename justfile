@@ -21,7 +21,7 @@ debug := "--port 8000 --debug --reload"
 @tw_watch:
     {{ python_dir }}/tailwindcss -i ./app/static/tailwind/input.css -o ./app/static/css/main.css --watch
 
-@make_migration message:
+@makemigrations message:
     {{ python_dir }}/alembic revision --autogenerate -m "{{ message }}"
     {{ python_dir }}/alembic upgrade head
 
