@@ -1,0 +1,53 @@
+<ul id="admin-menu-seasons" class="flex flex-row gap-x-4 md:pt-4 md:gap-1 md:flex-col">  
+  <li class="pt-2 font-bold"><a href="/iesl-admin/season" class="hover:cursor-pointer hover:text-opal-600">Seasons</a></li>
+</ul>
+<ul id="admin-menu-leagues" class="flex flex-row gap-x-4 md:gap-1 md:flex-col">
+  <li class="pt-2 font-bold"><a href="/iesl-admin/league" class="hover:cursor-pointer hover:text-opal-600">Leagues</a></li>
+  <ul class="hidden md:flex md:flex-col lg:text-sm ml-2">
+    {% for league in leagues %}
+    <li><a
+      hx-get="/iesl-admin/league/{{ league.slug }}"
+      hx-target="#admin-main-panel"
+      hx-swap="outerHTML"
+      name="{{ league.slug }}"
+
+      class="hover:cursor-pointer hover:text-opal-600" >{{ league.day_of_week }} {{ league.name }}</li>
+    {% endfor %}
+  </ul>
+</ul>
+<ul id="admin-menu-teams" class="flex flex-row gap-x-4 md:gap-1 md:flex-col md:pt-2">
+  <li class="pt-2 font-bold"><a href="/iesl-admin/team" class="hover:cursor-pointer hover:text-opal-600">Teams</a></li>
+  <ul class="hidden md:flex md:flex-col lg:text-sm ml-2">
+    <li><a 
+      hx-get="/iesl-admin/team/create" 
+      hx-target="#admin-main-panel"
+      hx-swap="outerHTML"
+      hx-push-url="true"
+      class="hover:text-opal-500 hover:cursor-pointer">Add new team</a></li>
+    <li>Edit existing team</li>
+    <li>Remove team</li>
+  </ul>
+</ul>
+<ul id="admin-menu-schedules" class="flex flex-row gap-x-4 md:gap-1 md:flex-col md:pt-2">
+  <li class="pt-2 font-bold"><a href="/iesl-admin/schedule">Schedules</a></li>
+  <ul class="hidden md:flex md:flex-col lg:text-sm ml-2">
+    <li>Add new schedule</li>
+    <li>Edit existing schedule</li>
+  </ul>
+</ul>
+<ul id="admin-menu-players" class="flex flex-row gap-x-4 md:gap-1 md:flex-col md:pt-2">
+  <li class="pt-2 font-bold"><a href="#">Players</a></li>
+  <ul class="hidden md:flex md:flex-col lg:text-sm ml-2">
+    <li>Add new player</li>
+    <li>Edit existing player</li>
+    <li>Remove player</li>
+  </ul>
+</ul>
+<ul id="admin-menu-users" class="flex flex-row gap-x-4 md:gap-1 md:flex-col md:pt-2">
+  <li class="pt-2 font-bold"><a href="#">Users</a></li>
+  <ul class="hidden md:flex md:flex-col lg:text-sm ml-2">
+    <li>Add new user</li>
+    <li>Edit existing user</li>
+    <li>Remove user</li>
+  </ul>
+</ul>

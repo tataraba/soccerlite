@@ -1,0 +1,96 @@
+
+{% extends "/admin/dashboard.html" %}
+
+{% block admin_panel %}
+<section id="admin-main-panel" class="flex flex-col w-full min-h-screen">
+  <div class="flex flex-col w-full">
+    <div class="flex flex-col px-6">
+      <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">Schedules</h3>
+        <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
+          <li class="text-spaceteal-200">New schedule</li>
+          <!-- <li class="text-spaceteal-200">Edit schedule</li> -->
+        </ul>
+    </div>
+  </div>
+  <div id="admin-page-content" class="flex flex-col items-center w-full px-2 pt-6 md:pt-14">
+    <div id="admin-schedule-form" class="flex flex-col items-center w-full px-2">
+      <form
+        method="post"
+        class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
+        <div class="basis-full md:basis-1/2 p-4">
+          <label for="league_id" class="text-sm font-medium text-gray-900 block mb-2">Create Schedule for Selected League</label>
+          {% if leagues %}
+          <select hx-get="/iesl-admin/schedule/league-link"
+                  hx-trigger="change"
+                  hx-target="#create-cancel"
+                  hx-swap="outerHTML"
+
+                  name="league_id" id="league_id" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+            <option value="null">Select League</option>
+            {% for league in leagues %}
+            <option value="{{ league.id }}">{{ league.name }}</option>
+            {% endfor %}
+          </select>
+          {% else %}
+          <p class="text-xs font-medium text-rose_iesl-400">Must create League before creating a Schedule.</p>
+          {% endif %}
+        </div>
+        <div class="flex flex-row flex-wrap gap-3 basis-full p-4">
+          <div class="w-auto">
+            <label for="total_games" class="text-sm font-medium text-gray-900 block mb-2">Total Games</label>
+            <input type="text" name="total_games" id="total_games" maxlength="2" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-auto p-2.5" value="10">
+          </div>
+          <div class="w-auto">
+            <label for="time_between_games" class="text-sm font-medium text-gray-900 block mb-2">Time Between Games (minutes)</label>
+            <input type="text" name="time_between_games" id="time_between_games" maxlength="2" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-auto p-2.5" value="120">
+          </div>
+          <div class="w-auto">
+            <label for="concurrent_games" class="text-sm font-medium text-gray-900 block mb-2">Concurrent Matches (# of fields)</label>
+            <input type="text" name="concurrent_games" id="concurrent_games" maxlength="2" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-auto p-2.5" value="1">
+          </div>
+        </div>
+
+          <div class="basis-1/4 p-4 flex flex-col flex-nowrap">
+            <div class="basis-full">
+              <div
+                x-data
+                x-init="
+                  flatpickr($refs.dateInput, {
+                    altInput: true,
+                    enableTime: true,
+                    altFormat: 'M d, Y - h:i K',
+                    dateFormat: 'Z',
+                    allowInput: true,
+                  })
+                "
+              >
+                <label for="scheduled_start" class="text-sm font-medium text-gray-900 block mb-2">Start Date</label>
+                <input name="scheduled_start" id="scheduled_start" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" required=""class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-48 p-2.5" />
+              </div>
+            </div>
+          </div>
+
+        {% block confirmation_buttons %}
+
+        <div id="create-cancel"class="relative flex flex-col items-center py-4 pt-20 w-full">
+          {% if not schedule %}
+          {% if league %}
+          <input type="hidden" name="season_id" value="{{league.season_id}}">
+          {% endif %}
+          <button
+          type="submit" class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Generate Schedule</button>
+          {% else %}
+          <p class="absolute top-14 text-xs font-medium text-rose_iesl-400">*Schedule already generated</p>
+          <button class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Edit Schedule</button>
+          {% endif %}
+          <!-- button to cancel the form-->
+        <a href="/iesl-admin/schedule"
+        class="basis-auto w-1/2 mx-auto my-6 text-gray-500 bg-white hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Cancel</a>
+        </div>
+
+        {% endblock %}
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

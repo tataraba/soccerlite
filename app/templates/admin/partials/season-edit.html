@@ -1,0 +1,151 @@
+<section id="admin-main-panel" class="flex flex-col w-full h-screen">
+  <div class="flex flex-col w-full">
+    <div class="flex flex-col px-6">
+      <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">Seasons</h3>
+        <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
+          <li class="text-spaceteal-200">Edit Season</li>
+          <!-- <li class="text-spaceteal-200">Edit Season</li> -->
+        </ul>
+    </div>
+  </div>
+  
+  <div id="admin-page-content" class="flex flex-col items-center w-full px-2 pt-6 md:pt-14">
+    <div id="admin-season-form" class="flex flex-col items-center w-full px-2">
+      <form
+        method="post"
+        enctype="application/x-www-form-urlencoded"
+        action="/iesl-admin/season/{{ season.slug }}"
+        class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
+        
+        <div class="basis-full md:basis-7/12 p-4">
+          <label for="name" class="text-sm font-medium text-gray-900 block mb-2">Season Name</label>
+          <input
+            type="text" name="name" id="name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="" value="{{ season.name }}">
+        </div>
+
+        <div class="basis-full md:basis-full p-4">
+          <label for="description" class="text-sm font-medium text-gray-900 block mb-2">Description</label>
+          <input type="text" name="description" id="description" maxlength="120" rows="3" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" value="{{ season.description }}">
+        </div>
+          <div class="basis-1/4 p-4 flex flex-col flex-nowrap">
+            <div class="basis-full">
+              <div
+                x-data
+                x-init="
+                  flatpickr($refs.dateInput, {
+                    defaultDate: '{{ season.start_date }}',
+                    altInput: true,
+                    altFormat: 'Y-m-d',
+                    dateFormat: 'Z',
+                    allowInput: true,
+                  })
+                "
+              >
+                <label for="start_date" class="text-sm font-medium text-gray-900 block mb-2">Start Date</label>
+                <input name="start_date" id="start_date" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-48 p-2.5" />
+              </div>
+            </div>
+
+            {% if show_end_date %}
+            <div id="season-create-end-date" class="basis-full pt-4">
+              <div
+                x-data
+                x-init="
+                  flatpickr($refs.dateInput, {
+                    defaultDate: new Date().fp_incr(70),
+                    altInput: true,
+                    altFormat: 'Y-m-d',
+                    dateFormat: 'Z',
+                    allowInput: true,
+                  })
+                "
+              >
+                <label for="end_date" class="text-sm font-medium text-gray-900 block mb-2">End Date</label>
+                <input name="end_date" id="end_date" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-48 p-2.5" />
+              </div>
+            </div>
+            {% else %}
+            <div class="basis-full pt-4">
+              <label for="end_date" class="text-sm font-medium text-gray-900 block mb-2">End Date</label>
+              <p class="text-sm text-spaceteal-300">Only added when closing a season</p>
+            </div>
+
+            {% endif %}
+
+          </div>
+
+          <div class="basis-full md:basis-7/12 p-4">
+
+            <label class="text-sm font-medium text-gray-900 block mb-2">
+              Select League(s)
+            </label>
+
+            {% if not leagues %}
+            <p class="p-2.5 text text-spaceteal-400">
+            No leagues available to select
+            </p>
+            {% else %}
+
+            <div x-data="{
+              options: [],
+              open: false,
+              filter: ''
+              }" class="w-full relative">
+
+                <div @click="open = !open" class="p-3 rounded-lg flex gap-2 w-full border border-neutral-300 cursor-pointer truncate h-12 bg-white" x-text="options.length + ' Leagues selected'">
+                </div>
+
+                <div class="p-3 rounded-lg flex gap-3 w-full shadow-lg x-50 absolute flex-col bg-white mt-3" x-show="open" x-trap="open" @click.outside="open = false" @keydown.escape.window="open = false" x-transition:enter=" ease-[cubic-bezier(.3,2.3,.6,1)] duration-200" x-transition:enter-start="!opacity-0 !mt-0" x-transition:enter-end="!opacity-1 !mt-3" x-transition:leave=" ease-out duration-200" x-transition:leave-start="!opacity-1 !mt-3" x-transition:leave-end="!opacity-0 !mt-0">
+                  <input x-model="filter" placeholder="Search" class="border-b outline-none p-3 -mx-3 pt-0" type="text">
+                  <p x-show="! $el.parentNode.innerText.toLowerCase().includes(filter.toLowerCase())" class="text-neutral-400 text-center font-bolc text-2xl">
+                      –
+                  </p>
+
+                  {% for league in leagues %}
+                  <div x-show="$el.innerText.toLowerCase().includes(filter.toLowerCase())" class="flex items-center">
+                      <input x-model="options" name="{{league.name}}" id="{{league.name}}" type="checkbox" value="{{league.id}}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                      <label for="{{league.name}}" class="ml-2 text-sm font-medium text-gray-900 flex-grow">{{league.name}}</label>
+                  </div>
+                  {% endfor %}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+          </div>
+          <input hidden type="text" name="id" value="{{season.id}}">
+          {% block confirmation_buttons %}
+          <div id="save-cancel" class="flex flex-col items-center py-4 pt-28 w-full">
+
+            <!-- save button-->
+            <button type="submit" class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">SAVE</button>
+
+            <!-- cancel button -->
+            <a href="/iesl-admin"
+               class="basis-auto w-1/2 mx-auto my-6 text-gray-500 bg-white hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Cancel</a>
+
+          </div>
+          {% endblock %}
+          {% block delete_confirm %}
+          {% if confirm %}
+          <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
+            <a hx-delete="/iesl-admin/season/delete/{{season.slug}}"
+               hx-headers='{"season_id":"{{season.id}}", "confirm":"true"}'
+               hx-target="#admin-main-panel"
+               class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">ARE YOU SURE?</a>
+          </div>
+          {% else %}
+          <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
+            <a hx-get="/iesl-admin/season/delete/{{season.slug}}"
+              hx-target="#delete-confirm"
+              hx-swap="outerHTML"
+              class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-400 hover:border-red-700 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">DELETE SEASON</a>
+          </div>
+          {% endif %}
+          {% endblock %}
+      </form>
+    </div>
+  </div>  
+  
+</section>

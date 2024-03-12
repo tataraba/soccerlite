@@ -1,0 +1,86 @@
+<section id="admin-main-panel" class="flex flex-col w-full min-h-screen">
+    <div class="flex flex-col w-full">
+      <div class="flex flex-col px-6">
+        <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">Leagues</h3>
+          <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
+            <li><a 
+                  hx-get="/iesl-admin/league/create" 
+                  hx-target="#admin-main-panel"
+                  hx-swap="outerHTML"
+                  hx-push-url="true"
+                  class="hover:text-opal-500 hover:cursor-pointer">New League</a></li>
+
+            {% if view == "tile_view" %}  
+            <li><a 
+                  hx-get="/iesl-admin/league"
+                  hx-headers='{"view": "list_view"}'
+                  hx-target="#admin-main-panel"
+                  hx-swap="outerHTML"
+                  class="hover:text-opal-500 hover:cursor-pointer">List View</a></li>
+            {% else %}
+            <li><a 
+                  hx-get="/iesl-admin/league"
+                  hx-headers='{"view": "tile_view"}'
+                  hx-target="#admin-main-panel"
+                  hx-swap="outerHTML"
+                  class="hover:text-opal-500 hover:cursor-pointer">Tile View</a></li>
+            {% endif %}
+          </ul>
+      </div>
+    </div>
+
+    {% if not leagues %}
+    <p class="text-2xl text-center text-sapphire_blue-600 p-20">
+        There are currently no leagues created. Create a new league and attach it to a season.
+    </p>
+    {% else %}
+
+    <div id="admin-page-content" class="flex flex-col items-center w-full px-2 pt-6 md:pt-14">
+        <div class="flex flex-1 flex-row flex-wrap w-full max-w-screen-md bg-slate-100 border rounded-md">
+            {% for league in leagues %}
+            <div 
+                hx-get="/iesl-admin/league/{{ league.slug }}",
+                hx-target="#admin-main-panel"
+                hx-swap="outerHTML"
+                name="{{ league.slug }}"
+                hx-push-url="true"
+                class="p-4 border-b w-full hover:bg-teal-100 hover:cursor-pointer">
+                <div class="flex flex-row flex-auto">
+                    <div>
+                        <label for="league-name" class="text-xs basis-1/3 uppercase text-rose_iesl-300 block">League Name</label>
+                        <h3 id="league-name">{{ league.name }}</h3>
+                    </div>
+                    <div class="pl-12">
+                        <label for="league-day" class="text-xs basis-1/3 uppercase text-rose_iesl-300 block">Plays On</label>
+                        <h3 id="league-day">{{ league.day_of_week }}</h3>
+                    </div>
+                    <div class="pl-12">
+                        <label for="division" class="text-xs basis-1/3 uppercase text-rose_iesl-300 block">Division</label>
+                        <h3 id="division">{{ league.category }} {{ league.division }}</h3>
+                    </div>
+                    {% if league.male_age_over  %}
+                    <div class="hidden md:block pl-12">
+                        <label for="male_age_over" class="text-xs basis-1/3 uppercase text-rose_iesl-300 block">Age (Men)</label>
+                        <h3 id="male_age_over">Over {{ league.male_age_over }}</h3>
+                    </div>
+                    {% endif %}
+                    {% if league.female_age_over  %}
+                    <div class="hidden md:block pl-12">
+                        <label for="female_age_over" class="text-xs basis-1/3 uppercase text-rose_iesl-300 block">Age (Women)</label>
+                        <h3 id="female_age_over">Over {{ league.female_age_over }}</h3>
+                    </div>
+                    {% endif %}
+                    {% if league.open_division %}
+                    <div class="hidden md:block pl-12">
+                        <label for="female_age_over" class="text-xs basis-1/3 uppercase text-rose_iesl-300 block">Open</label>
+                        <h3 id="female_age_over"> All ages</h3>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    {% endif %}
+</section>

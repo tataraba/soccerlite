@@ -1,0 +1,86 @@
+<section id="admin-main-panel" class="flex flex-col w-full min-h-screen">
+    <div class="flex flex-col w-full">
+      <div class="flex flex-col px-6">
+        <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">Seasons</h3>
+          <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
+            <li><a 
+                  hx-get="/iesl-admin/season/create" 
+                  hx-target="#admin-main-panel"
+                  hx-swap="outerHTML"
+                  hx-push-url="true"
+                  class="hover:text-opal-500 hover:cursor-pointer">New Season</a></li>
+
+            {% if view == "tile_view" %}  
+            <li><a 
+                  hx-get="/iesl-admin/season"
+                  hx-headers='{"view": "list_view"}'
+                  hx-target="#admin-main-panel"
+                  hx-swap="outerHTML"
+                  class="hover:text-opal-500 hover:cursor-pointer">List View</a></li>
+            {% else %}
+            <li><a 
+                  hx-get="/iesl-admin/season"
+                  hx-headers='{"view": "tile_view"}'
+                  hx-target="#admin-main-panel"
+                  hx-swap="outerHTML"
+                  class="hover:text-opal-500 hover:cursor-pointer">Tile View</a></li>
+            {% endif %}
+          </ul>
+      </div>
+    </div>
+
+    {% if not seasons %}
+    <p class="text-2xl text-center text-sapphire_blue-600 p-20">
+        There are currently no seasons created. Create a new season for your leagues!
+    </p>
+    {% else %}
+
+    <div id="admin-page-content" class="flex flex-col items-center w-full px-2 pt-6 md:pt-14">
+        <div class="flex flex-1 flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
+          {% if view == "tile_view" %}  
+          {% for season in seasons %}
+            <div class="px-4 py-6 border-b md:w-1/2">
+                <label for="season-name" class="text-xs uppercase text-rose_iesl-300 block">Season Name</label>
+                <h3 id="season-name">{{ season.name }}</h3>
+                {% if season.description %}
+                <label for="season-description" class="text-xs uppercase text-rose_iesl-300 block mt-3">Season Description</label>
+                <h3 id="season-description">{{ season.description }}</h3>
+                {% endif %}
+                <label for="season-start-date" class="text-xs uppercase text-rose_iesl-300 block mt-3">Start Date</label>
+                <h3 id="season-start-date">{{ season.start_date.strftime('%Y-%m-%d') }}</h3>
+                <label for="season-end-date" class="text-xs uppercase text-rose_iesl-300 block mt-3">End Date</label>
+                {% if not season.end_date %}
+                <h3 id="season-end-date">{{ season.end_date }}</h3>
+                {% else %}
+                <h3 id="season-end-date">{{ season.end_date.strftime('%Y-%m-%d') }}</h3>
+                {% endif %}
+                <div hidden>{{season.id}}</div>
+                <button 
+                    hx-get="/iesl-admin/season/{{season.slug}}",
+                    hx-target="#admin-main-panel"
+                    hx-swap="outerHTML"
+                    name="{{season.slug}}"
+                    class="text-xs uppercase rounded bg-sapphire_blue-500 hover:bg-sapphire_blue-600 text-spaceteal-100 py-1 px-3 block mt-1">Edit</button>
+            </div>
+            {% endfor %}
+            {% elif view == "list_view" %}
+            <div class="px-4 py-6 border-b md:w-1/2">
+              <ul>
+                {% for season in seasons %}
+                <li class="text-sm uppercase block mt-3">
+                  <a 
+                    hx-get="/iesl-admin/season/{{season.slug}}",
+                    hx-target="#admin-main-panel"
+                    hx-swap="outerHTML"
+                    name="{{season.slug}}"
+                    class="text-sapphire_blue-500 hover:text-sapphire_blue-700 hover:cursor-pointer hover:underline">{{ season.name }}</a> &diams; <span class="text-rose_iesl-300">{{season.start_date.strftime('%Y-%m-%d')}}</span></li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>

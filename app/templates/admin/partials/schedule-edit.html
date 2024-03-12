@@ -1,0 +1,225 @@
+{% extends "/admin/dashboard.html" %}
+
+{% block admin_panel %}
+<section id="admin-main-panel" class="flex flex-col w-full min-h-screen">
+    <div class="flex flex-row w-full justify-between">
+      <div class="flex flex-col pl-6 sm:pr-3">
+        <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">schedules</h3>
+          <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
+            <li><a
+              hx-get="/iesl-admin/schedule/{{ schedule.slug }}"
+              hx-target="#admin-main-panel"
+              hx-swap="outerHTML"
+              hx-push-url="true"
+              class="hover:text-opal-500 hover:cursor-pointer">View Schedule</a></li>
+            <!-- <li class="text-spaceteal-200">Edit schedule</li> -->
+          </ul>
+      </div>
+      <div id="schedule-key" class="flex flex-row flex-wrap pt-4 w-2/5 gap-1">
+        <div class="w-auto uppercase text-xs text-spaceteal-500">Legend</div>
+        <div class="flex basis-full items-center">
+          <div class="flex flex-row flex-nowrap w-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-rose-400">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-rose-400">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+          <span class="text-xs text-spaceteal-600 w-auto pl-1">Games in this Matchday sent to end</span>
+        </div>
+        <div class="flex basis-full items-center">
+          <button class="text-white bg-cyan-600 opacity-70 rounded-md text-xs text-center h-6 w-16">save</button>
+          <span class="text-xs text-spaceteal-600 w-auto pl-1">Save only this match</span>
+        </div>
+        <div class="flex basis-full items-center">
+          <button class="text-gray-500 bg-slate-300 opacity-70 rounded-md text-xs text-center h-6 w-16">cancel</button>
+          <span class="text-xs text-spaceteal-600 w-auto pl-1">Revert data for this match</span>
+        </div>
+      </div>
+    </div>
+    <div id="admin-page-content" class="flex flex-col items-center w-full px-2 pt-6 md:pt-14">
+      <div id="admin-schedule-fixtures" class="flex flex-col items-center w-full px-2">
+        <div
+          class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md"
+          >
+          {% block fixture_edit %}
+          {% for fixture in fixtures %}
+
+          <div id="fixture-{{ fixture.id }}" class="flex flex-row flex-wrap justify-between border-b w-full odd:bg-gray-100 p-2">
+            <input hidden type="text" name="id" value="{{fixture.id}}">
+            <div id="fixture-details" class="flex flex-row flex-wrap w-full relative">
+              {% if updated %}
+              <div hx-ext="class-tools" class="relative w-full">
+                <div id="save-message" classes="add opacity-0:2s" class="absolute text-xs transition-opacity duration-700  text-teal-500 uppercase inline w-full text-center">Saved!</div>
+              </div>
+              {% elif cancelled %}
+              <div hx-ext="class-tools" class="relative w-full">
+                <div id="cancel-message" classes="add opacity-0:2s" class="absolute text-xs transition-opacity duration-700  text-red-400 uppercase inline w-full text-center">Cancelled</div>
+              </div>
+              {% endif %}
+              <div class="flex flex-row gap-1 items-center w-2/5 pb-2">
+                <p class="hidden font-medium text-xs uppercase text-spaceteal-700 sm:block">Matchday {{ fixture.matchday }}:</p>
+                <select name="game_status" id="game_status" class="text-xs sm:text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1" required="">
+                  {% for status in game_status %}
+                  {% if status.value == fixture.game_status %}
+                  <option value="{{ status.value }}" selected>{{ status.value }}</option>
+                  {% else %}
+                  <option value="{{ status.value }}">{{ status.value }}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div id="fixture-date-time" class="flex flex-col justify-center gap-1 w-2/5">
+              <div class="flex flex-col">
+                <div
+                  x-data
+                  x-init="
+                  flatpickr($refs.dateInput, {
+                      altInput: true,
+                      enableTime: true,
+                      altFormat: 'M d, Y - h:i K',
+                      dateFormat: 'Z',
+                      allowInput: true,
+                      defaultDate: '{{fixture.game_date.strftime("%Y-%m-%d %H:%M")}}',});"
+                  >
+                  <input name="game_date" id="game_date" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" class="text-xs sm:text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-5/6 p-1" />
+                </div>
+              </div>
+              <select name="field" id="field" class="text-xs sm:text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 w-5/6 block p-1" required="">
+                {% for f in field %}
+                      {% if f.value == fixture.field %}
+                      <option value="{{ f.value }}" selected>Field {{ f.value }}</option>
+                      {% else %}
+                      <option value="{{ f.value }}">Field {{ f.value }}</option>
+                      {% endif %}
+                    {% endfor %}
+              </select>
+
+            </div>
+            <div id="fixture-teams" class="flex flex-row gap-1 w-3/5 self-center">
+              <div class="flex flex-col w-3/4">
+                <div id="fixture-home-team" class="flex flex-row relative w-full justify-between">
+                  <div id="score" class="absolute -top-6 right-1"><span class="text-xs text-spaceteal-500 uppercase">score</span></div>
+                  <div class="flex flex-row items-center">
+                    <p class="hidden sm:block w-8 font-bold text-spaceteal-500">H</p>
+                    <select name="team_home_name" id="team_home_name" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1" required="">
+                      {% for team in teams %}
+                        {% if team.name == fixture.team_home_name %}
+                        <option value="{{ team.name }}" selected>{{ team.name }}</option>
+                        {% else %}
+                        <option value="{{ team.name }}">{{ team.name }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                  {% if fixture.game_status == "Unplayed" or fixture.game_status == "Forfeit" %}
+                  <input name="team_home_goals" id="team_home_goals" type="number" min="0" max="99" value="{{ fixture.team_home_goals }}" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-1/6 p-1" required="" />
+                  {% endif %}
+                </div>
+                <div id="fixture-away-team" class="flex flex-row w-full justify-between">
+                  <div class="flex flex-row items-center">
+                    <p class="hidden sm:block w-8 font-bold text-spaceteal-500">A</p>
+                    <select name="team_away_name" id="team_away_name" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1" required="">
+                      {% for team in teams %}
+                        {% if team.name == fixture.team_away_name %}
+                        <option value="{{ team.name }}" selected>{{ team.name }}</option>
+                        {% else %}
+                        <option value="{{ team.name }}">{{ team.name }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                  {% if fixture.game_status == "Unplayed" or fixture.game_status == "Forfeit" %}
+                  <input name="team_away_goals" id="team_away_goals" type="number" min="0" max="99" value="{{ fixture.team_away_goals }}" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-1/6 p-1" required="" />
+                  {% endif %}
+                </div>
+              </div>
+              <div class="flex sm:hidden flex-row flex-nowrap items-end justify-center w-1/4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </div>
+            </div>
+            <div class="flex flex-row w-full pt-1">
+              <div id="fixture-officials" class="flex flex-row flex-wrap w-3/5">
+                <div class="flex flex-col gap-1 w-full content-center">
+                  <div class="flex flex-row gap-1 items-center">
+                    <p class="font-medium text-xs uppercase text-spaceteal-600">Ref A:</p>
+                    <input name="referee_a" id="referee_a" type="text" min="0" max="100" value="{{ fixture.referee_a }}" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1"/>
+                  </div>
+                  <div class="flex flex-row gap-1 items-center">
+                    <p class="font-medium text-xs uppercase text-spaceteal-600">Ref B:</p>
+                    <input name="referee_b" id="referee_b" type="text" min="0" max="100" value="{{ fixture.referee_b }}" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1"/>
+                  </div>
+                </div>
+                {% if fixture.mvp %}
+                <div class="flex flex-row">
+                  <p class="font-medium text-xs uppercase text-spaceteal-600">MVP:</p>
+                  <p class="text-xs text-spaceteal-400 italic pl-2">Walter Supercalafragilistic</p>
+                </div>
+                {% endif %}
+              </div>
+              <div class="flex flex-row flex-nowrap justify-end w-2/5">
+                <div class="hidden sm:flex flex-row flex-nowrap items-center md:items-end justify-center pr-1 w-1/4">
+                  <div hx-post="/iesl-admin/schedule/push/{{ fixture.id }}" 
+                       hx-trigger="click"
+                       hx-target="#admin-main-panel"
+                       hx-swap="outerHTML"
+                       hx-include="#fixture-{{ fixture.id }}"
+                        class="h-auto flex flex-row flex-nowrap rounded-md p-1 hover:bg-rose-100 hover:cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-rose-500">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-rose-500">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                  </div>
+                </div>
+                <div id="save-fixture" class="flex flex-col md:flex-row p-1 pr-2 gap-1 justify-self-end items-end justify-center">
+                  <button hx-post="/iesl-admin/fixture/{{ fixture.id }}"
+                          hx-trigger="click"
+                          hx-swap="outerHTML"
+                          hx-target="#fixture-{{ fixture.id }}"
+                          hx-include="#fixture-{{ fixture.id }}"
+                          class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 rounded-md text-xs text-center h-6 w-16">save</button>
+                  <button hx-get="/iesl-admin/fixture/{{ fixture.id }}"
+                          hx-trigger="click"
+                          hx-swap="outerHTML"
+                          hx-target="#fixture-{{ fixture.id }}"
+                          hx-include="#fixture-{{ fixture.id }}"
+                          class="text-gray-500 bg-slate-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-md text-xs text-center h-6 w-16">cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          {% endblock %}
+          <div id="schedule-end" class="flex flex-row flex-wrap justify-between border-b w-full odd:bg-gray-100 p-2"
+          </div>
+          {% block delete_confirm %}
+          {% if confirm %}
+          <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
+              <a hx-delete="/iesl-admin/schedule/delete/{{schedule.slug}}"
+                  hx-headers='{"schedule_id":"{{schedule.id}}", "confirm":"true"}'
+                  hx-target="#admin-main-panel"
+                  class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">ARE YOU SURE?</a>
+          </div>
+          {% else %}
+          <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
+              <a hx-get="/iesl-admin/schedule/delete/{{schedule.slug}}"
+              hx-target="#delete-confirm"
+              hx-swap="outerHTML"
+              class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-400 hover:border-red-700 hover:cursor-pointer focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">DELETE schedule</a>
+          </div>
+          {% endif %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endblock %}

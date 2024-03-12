@@ -1,0 +1,141 @@
+<section id="admin-main-panel" class="flex flex-col w-full min-h-screen">
+  <div class="flex flex-col w-full">
+    <div class="flex flex-col px-6">
+      <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">Teams</h3>
+        <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
+          <li class="text-spaceteal-200">New Team</li>
+          <!-- <li class="text-spaceteal-200">Edit Team</li> -->
+        </ul>
+    </div>
+  </div>
+  
+    <div id="admin-page-content" class="flex flex-col items-center w-full px-2 pt-6 md:pt-14">
+      <div id="admin-team-form" class="flex flex-col items-center w-full px-2">
+        <form
+          method="post"
+          enctype="application/x-www-form-urlencoded"
+          action="/iesl-admin/team/{{ team.slug }}"
+          class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
+  
+          <div class="basis-full p-4 md:basis-1/2">
+            <div class="pt-8">
+              <label for="name" class="text-sm font-medium text-gray-900 block mb-2">Team Name</label>
+              <input type="text" name="name" id="name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="" value="{{ team.name }}">
+            </div>
+          </div>
+  
+          <div class="basis-full p-4 md:basis-1/4 flex bg-" x-data="{
+            isOpen: false,
+            colors: ['Red', 'Blue', 'Green', 'Yellow', 'Orange', 'Black', 'Purple', 'Pink', 'White'],
+            uniform_color: 'Blue',
+              }">
+            <div class="pt-8 basis-auto pr-4">
+                <label for="uniform_color" class="text-sm font-medium text-gray-900 block mb-2">Uniform Color</label>
+                <input id="uniform_color" type="text" placeholder="Pick a color"
+                  class="border border-transparent shadow px-4 py-2 leading-normal text-gray-700 bg-white rounded-md focus:outline-none focus:shadow-outline"
+                  readonly
+                  x-model="uniform_color" value=${uniform_color}>
+            </div>
+            <div class="relative basis-auto self-end">
+              <button type="button" @click="isOpen = !isOpen"
+                class="w-10 h-10 rounded-full focus:outline-none focus:shadow-outline inline-flex p-2 shadow"
+                :style="`background: ${uniform_color}; color: #eeeeee;`"
+              >
+                <svg class="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" d="M15.584 10.001L13.998 8.417 5.903 16.512 5.374 18.626 7.488 18.097z"/><path d="M4.03,15.758l-1,4c-0.086,0.341,0.015,0.701,0.263,0.949C3.482,20.896,3.738,21,4,21c0.081,0,0.162-0.01,0.242-0.03l4-1 c0.176-0.044,0.337-0.135,0.465-0.263l8.292-8.292l1.294,1.292l1.414-1.414l-1.294-1.292L21,7.414 c0.378-0.378,0.586-0.88,0.586-1.414S21.378,4.964,21,4.586L19.414,3c-0.756-0.756-2.072-0.756-2.828,0l-2.589,2.589l-1.298-1.296 l-1.414,1.414l1.298,1.296l-8.29,8.29C4.165,15.421,4.074,15.582,4.03,15.758z M5.903,16.512l8.095-8.095l1.586,1.584 l-8.096,8.096l-2.114,0.529L5.903,16.512z"/></svg>
+              </button>
+  
+              <div x-show="isOpen" @click.away="isOpen = false" x-transition:enter="transition ease-out duration-100 transform"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75 transform"
+                x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg">
+                <div class="rounded-md bg-gray-100 shadow-xs px-4 py-3">
+                  <div class="flex flex-wrap -mx-2">
+                  <template x-for="(color, index) in colors" :key="index">
+                    <div
+                      class="px-2"
+                    >
+                      <template x-if="uniform_color === color">
+                        <div
+                          class="w-8 h-8 inline-flex rounded-full cursor-pointer border-4 border-gray-100"
+                          :style="`background: ${color}; box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);`"
+                        ></div>
+                      </template>
+                      <template x-if="uniform_color != color">
+                        <div
+                          @click="uniform_color = color"
+                          @keydown.enter="uniform_color = color"
+                          role="checkbox"
+                            tabindex="0"
+                            :aria-checked="uniform_color"
+                          class="w-8 h-8 inline-flex rounded-full cursor-pointer border-4 border-gray-100 focus:outline-none focus:shadow-outline"
+                          :style="`background: ${color};`"
+                        ></div>
+                      </template>
+                    </div>
+                  </template>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="basis-full md:basis-1/2 p-4">
+            <label for="league_id" class="text-sm font-medium text-gray-900 block mb-2">League</label>
+            {% if leagues %}
+            <select name="league_id" id="league_id" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+              <option value="null" selected>Select League</option>
+              {% for league in leagues %}
+              <option value="{{ league.id }}">{{ league.name }}</option>
+              {% endfor %}
+            </select>
+            {% else %}
+            <p class="text-xs font-medium text-rose_iesl-400">Must create League before attaching to team.</p>
+            {% endif %}
+          </div>
+          <div class="basis-full md:basis-2/3 p-4">
+            <label for="contact_name" class="text-sm font-medium text-gray-900 block mb-2">Manager/Captain</label>
+              <input type="text" name="contact_name" id="contact_name" class="shadow-sm w-full bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-2.5" value="{{team.contact_name}}">
+          </div>
+  
+          <div class="basis-full md:basis-1/2 p-4">
+            <label for="contact_phone" class="text-sm font-medium text-gray-900 block mb-2">Phone Number</label>
+              <input type="tel" name="contact_phone" id="contact_phone" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" value="{{team.contact_phone}}">
+          </div>
+          <div class="basis-full md:basis-1/2 p-4">
+            <label for="contact_email" class="text-sm font-medium text-gray-900 block mb-2">Email</label>
+              <input type="email" name="contact_email" id="contact_email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" value="{{team.contact_email}}">
+          </div>
+          <input hidden type="text" name="id" value="{{team.id}}">
+            {% block confirmation_buttons %}
+            <div  id="create-cancel" class="flex flex-col items-center pt-20 w-full">
+
+            <button type="submit" class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">SAVE</button>
+
+            <!-- button to cancel the form-->
+            <a href="/iesl-admin/team" 
+               class="basis-auto w-1/2 mx-auto my-6 text-gray-500 bg-white hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Cancel</a>
+
+            </div>
+            {% endblock %}
+            {% block delete_confirm %}
+            {% if confirm %}
+            <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
+                <a hx-delete="/iesl-admin/team/delete/{{team.slug}}"
+                   hx-headers='{"team_id":"{{team.id}}", "confirm":"true"}'
+                   hx-target="#admin-main-panel"
+                   class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-700 hover:bg-red-600 hover:cursor-pointer focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">ARE YOU SURE?</a>
+            </div>
+            {% else %}
+            <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
+                <a hx-get="/iesl-admin/team/delete/{{team.slug}}"
+                hx-target="#delete-confirm"
+                hx-swap="outerHTML"
+                class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-400 hover:border-red-700 hover:cursor-pointer focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">DELETE TEAM</a>
+            </div>
+            {% endif %}
+            {% endblock %}
+        </form>
+      </div>
+    </div>
+  </section>
