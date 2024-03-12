@@ -26,7 +26,6 @@
       <form
         method="post"
         class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
-
         <div class="basis-full md:basis-7/12 p-4">
           <label for="name" class="text-sm font-medium text-gray-900 block mb-2">Season Name</label>
           <input
@@ -36,7 +35,7 @@
             hx-swap="outerHTML"
             type="text" name="name" id="name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="" placeholder="">
         </div>
-
+        <p class="text-xs px-4 text-sapphire_blue-700">Note: You can attach multiple leagues to a single season. However, you may want to create a new Season for leagues that don't share an identical scheduling time frame.</p>
         <div class="basis-full md:basis-full p-4">
           <label for="description" class="text-sm font-medium text-gray-900 block mb-2">Description (Optional)</label>
           <input type="text" name="description" id="description" maxlength="120" rows="3" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
