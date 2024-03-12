@@ -24,6 +24,7 @@ class TeamCreateDTO(SQLAlchemyDTO[Team]):
             "slug",
             "league",
             "fixtures",
+            "standings",
         }
     )
 
