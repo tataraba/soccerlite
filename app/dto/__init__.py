@@ -1,4 +1,10 @@
-from .fixture import FixtureCreateDTO, FixtureDTO, FixtureReadDTO, FixtureUpdateDTO
+from .fixture import (
+    FixtureCreateDTO,
+    FixtureDTO,
+    FixtureReadDTO,
+    FixtureScheduleDTO,
+    FixtureUpdateDTO,
+)
 from .league import LeagueCreateDTO, LeagueDTO, LeagueReadDTO, LeagueUpdateDTO
 from .schedule import ScheduleCreateDTO, ScheduleDTO, ScheduleReadDTO, ScheduleUpdateDTO
 from .season import SeasonCreateDTO, SeasonDTO, SeasonReadDTO, SeasonUpdateDTO
@@ -21,6 +27,7 @@ __all__ = [
     "FixtureReadDTO",
     "FixtureCreateDTO",
     "FixtureUpdateDTO",
+    "FixtureScheduleDTO",
     "ScheduleDTO",
     "ScheduleReadDTO",
     "ScheduleCreateDTO",

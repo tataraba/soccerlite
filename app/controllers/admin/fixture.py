@@ -19,6 +19,7 @@ from app.core.response import htmx_template
 from app.dto import (
     FixtureCreateDTO,
     FixtureDTO,
+    FixtureScheduleDTO,
     FixtureUpdateDTO,
     ScheduleCreateDTO,
     ScheduleDTO,
@@ -63,7 +64,7 @@ class AdminFixtureController(Controller):
             "fixture_service": provide_fixture_service,
             "team_repo": provide_team_repo,
         },
-        dto=FixtureUpdateDTO,
+        dto=FixtureScheduleDTO,
     )
     async def get_fixture_edit(
         self,

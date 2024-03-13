@@ -203,6 +203,7 @@ class AdminScheduleController(Controller):
         dependencies={
             "schedule_repo": provide_schedule_repo,
             "fixture_repo": provide_fixture_repo,
+            "team_repo": provide_team_repo,
         },
         dto=ScheduleUpdateDTO,
     )
@@ -211,6 +212,7 @@ class AdminScheduleController(Controller):
         request: HTMXRequest,
         schedule_repo: ScheduleRepo,
         fixture_repo: FixtureRepo,
+        team_repo: TeamRepo,
         slug: str,
     ) -> Template:
         schedule_data = await schedule_repo.get_by_slug(slug)
@@ -218,23 +220,18 @@ class AdminScheduleController(Controller):
             fixtures = await fixture_repo.list_from_schedule(
                 schedule_id=schedule_data.id
             )
-            for fixture in fixtures:
-                request.logger.info(f"{fixture=} and {fixture.team_names=}")
+
+        context = {
+            "schedule": schedule_data,
+            "fixtures": fixtures,
+        }
+        block_name = None
         if request.htmx:
-            return htmx_template(
-                template_name="admin/partials/schedule-view.html",
-                context={
-                    "schedule": schedule_data,
-                    "fixtures": fixtures,
-                },
-                block_name="admin_panel",
-            )
+            block_name = "admin_panel"
         return htmx_template(
             template_name="admin/partials/schedule-view.html",
-            context={
-                "schedule": schedule_data,
-                "fixtures": fixtures,
-            },
+            context=context,
+            block_name=block_name,
         )
 
     @get(

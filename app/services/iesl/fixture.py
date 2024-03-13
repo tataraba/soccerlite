@@ -191,9 +191,7 @@ def game_date_start(game_time: datetime, minute_increment: int) -> datetime:
 
 
 def determine_field(schedule: models.Schedule, field: int, match_count: int) -> int:
-    if match_count == 1:
-        return field
-    if match_count > schedule.concurrent_games:
+    if match_count == 1 or match_count > schedule.concurrent_games:
         return field
     else:
         return field + 1
@@ -274,7 +272,7 @@ def matchday_fixtures(
         fixture_team_away = models.FixtureTeam(team=match[1], fixture=fixture)
         fixture_teams.extend([fixture_team_home, fixture_team_away])
 
-        fixture.teams.extend([fixture_team_home, fixture_team_away])
+        fixture.fixture_teams.extend([fixture_team_home, fixture_team_away])
         fixtures.append(fixture)
 
     return fixtures, fixture_teams

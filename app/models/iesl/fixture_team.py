@@ -1,6 +1,6 @@
 from __future__ import annotations
-from enum import Enum
 
+from enum import Enum
 from uuid import UUID
 
 from sqlalchemy import ForeignKey, UniqueConstraint
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 
 __all__ = ["FixtureTeam"]
+
 
 class FixtureResult(str, Enum):
     W = "Win"
@@ -50,7 +51,7 @@ class FixtureTeam(DatabaseModel):
     team_name: AssociationProxy[str] = association_proxy("team", "name")
     team_contact: AssociationProxy[str] = association_proxy("team", "contact_name")
     fixture: Mapped["Fixture"] = relationship(
-        back_populates="teams",
+        back_populates="fixture_teams",
         foreign_keys="FixtureTeam.fixture_id",
         innerjoin=True,
         lazy="joined",
@@ -59,6 +60,6 @@ class FixtureTeam(DatabaseModel):
         "fixture", "team_home"
     )
     fixture_away_team: AssociationProxy[bool] = association_proxy(
-        "fixture", "team_home"
+        "fixture", "team_away"
     )
     fixture_matchday: AssociationProxy[int] = association_proxy("fixture", "matchday")

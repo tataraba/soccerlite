@@ -1,4 +1,9 @@
+from dataclasses import dataclass
+from datetime import datetime
+from uuid import UUID
+
 from advanced_alchemy.extensions.litestar.dto import SQLAlchemyDTO, SQLAlchemyDTOConfig
+from litestar.dto import DataclassDTO, DTOConfig
 
 from app.models import Fixture
 
@@ -33,3 +38,25 @@ class FixtureUpdateDTO(SQLAlchemyDTO[Fixture]):
     config = SQLAlchemyDTOConfig(
         partial=True,
     )
+
+
+@dataclass
+class FixtureSchedule:
+    schedule_id: UUID
+    team_home_id: UUID
+    team_away_id: UUID
+    team_home_name: str
+    team_away_name: str
+    matchday: int
+    game_date: datetime
+    field: int
+    referee_a: str
+    referee_b: str
+    team_home_goals: int
+    team_away_goals: int
+    mvp: str
+    game_status: str
+
+
+class FixtureScheduleDTO(DataclassDTO[FixtureSchedule]):
+    ...

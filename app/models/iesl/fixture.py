@@ -12,8 +12,9 @@ from typing_extensions import TYPE_CHECKING
 from app.models.base import DatabaseModel
 
 if TYPE_CHECKING:
+    from .fixture_team import FixtureTeam
     from .schedule import Schedule
-    from .team import FixtureTeam
+    from .team import Team
 
 __all__ = ["Fixture", "Field", "FixtureStatus"]
 
@@ -51,6 +52,8 @@ class Fixture(DatabaseModel):
     team_away: Mapped[UUID | None] = mapped_column(
         ForeignKey("team.id", ondelete="set null"),
     )
+    # team_home: Mapped[str | None] = mapped_column(ForeignKey("team.name"), default="")
+    # team_away: Mapped[str | None] = mapped_column(ForeignKey("team.name"), default="")
 
     matchday: Mapped[int] = mapped_column(Integer())
     game_date: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
@@ -72,7 +75,12 @@ class Fixture(DatabaseModel):
     # ORM
 
     schedule: Mapped["Schedule"] = relationship(back_populates="fixtures")
-    teams: Mapped[list["FixtureTeam"]] = relationship(
+    fixture_teams: Mapped[list["FixtureTeam"]] = relationship(
         back_populates="fixture", lazy="selectin", uselist=True, cascade="all, delete"
     )
-    team_names: AssociationProxy[str] = association_proxy("teams", "team_name")
+    team_names: AssociationProxy[str] = association_proxy("fixture_teams", "team_name")
+    # teams: Mapped["Team"] = relationship()
+    team_home_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_home])
+    team_away_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_away])
+    team_home_name: AssociationProxy[str] = AssociationProxy("team_home_model", "name")
+    team_away_name: AssociationProxy[str] = AssociationProxy("team_away_model", "name")
