@@ -5,6 +5,7 @@ from enum import Enum
 from uuid import UUID
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy.ext.associationproxy import AssociationProxy, association_proxy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing_extensions import TYPE_CHECKING
 
@@ -53,8 +54,8 @@ class Fixture(DatabaseModel):
 
     matchday: Mapped[int] = mapped_column(Integer())
     game_date: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
-    team_home_name: Mapped[str | None] = mapped_column(String(length=100), default="")
-    team_away_name: Mapped[str | None] = mapped_column(String(length=100), default="")
+    # team_home_name: Mapped[str | None] = mapped_column(String(length=100), default="")
+    # team_away_name: Mapped[str | None] = mapped_column(String(length=100), default="")
     field: Mapped[Field] = mapped_column(Integer())
     referee_a: Mapped[str | None] = mapped_column(String(length=100), default="")
     referee_b: Mapped[str | None] = mapped_column(String(length=100), default="")
@@ -74,3 +75,4 @@ class Fixture(DatabaseModel):
     teams: Mapped[list["FixtureTeam"]] = relationship(
         back_populates="fixture", lazy="selectin", uselist=True, cascade="all, delete"
     )
+    team_names: AssociationProxy[str] = association_proxy("teams", "team_name")

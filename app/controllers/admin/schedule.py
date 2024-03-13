@@ -218,6 +218,8 @@ class AdminScheduleController(Controller):
             fixtures = await fixture_repo.list_from_schedule(
                 schedule_id=schedule_data.id
             )
+            for fixture in fixtures:
+                request.logger.info(f"{fixture=} and {fixture.team_names=}")
         if request.htmx:
             return htmx_template(
                 template_name="admin/partials/schedule-view.html",
