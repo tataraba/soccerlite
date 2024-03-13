@@ -1,11 +1,20 @@
 <section id="admin-main-panel" class="flex flex-col w-full h-screen">
-  <div class="flex flex-col w-full">
-    <div class="flex flex-col px-6">
+  <div class="flex flex-row w-full justify-between">
+    <div class="flex flex-col px-6 sm:pr-3">
       <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">Seasons</h3>
         <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
           <li class="text-spaceteal-200">Edit Season</li>
           <!-- <li class="text-spaceteal-200">Edit Season</li> -->
         </ul>
+    </div>
+    <div id="schedule-instruction" class="flex flex-row flex-wrap pt-4 w-2/5 gap-1">
+      <div class="w-auto uppercase text-xs text-spaceteal-500">Instruction</div>
+      <div class="flex basis-full items-center">
+        <p class="text-xs text-spaceteal-600 w-auto"><span class="font-bold">Attach League(s)</span> will link existing leagues to this season.</p>
+      </div>
+      <div class="flex basis-full items-center">
+        <p class="text-xs text-spaceteal-600 w-auto">The <span class="font-bold">End Season</span> date will inactivate season, and will not be available for scheduling</p>
+      </div>
     </div>
   </div>
   
@@ -45,7 +54,7 @@
                 <input name="start_date" id="start_date" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-48 p-2.5" />
               </div>
             </div>
-
+            {% block end_season %}
             {% if show_end_date %}
             <div id="season-create-end-date" class="basis-full pt-4">
               <div
@@ -60,60 +69,55 @@
                   })
                 "
               >
-                <label for="end_date" class="text-sm font-medium text-gray-900 block mb-2">End Date</label>
+                <label for="end_date" class="text-sm font-medium text-gray-900 block mb-2">End Season</label>
                 <input name="end_date" id="end_date" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-48 p-2.5" />
               </div>
             </div>
             {% else %}
-            <div class="basis-full pt-4">
-              <label for="end_date" class="text-sm font-medium text-gray-900 block mb-2">End Date</label>
-              <p class="text-sm text-spaceteal-300">Only added when closing a season</p>
+            <div id="season-create-end-date" class="basis-full pt-4">
+              <label for="end_date" class="text-sm font-medium text-gray-900 block mb-2">End Season</label>
+              <button hx-get="/iesl-admin/season/end-date" 
+                      hx-target="#season-create-end-date"
+                      hx-swap="outerHTML"
+                      class="text-sm py-1 px-2 rounded bg-sapphire_blue-400 hover:bg-sapphire_blue-500 text-white py-1 px-3 block mt-1"
+              >Enter End Date</button">
             </div>
-
             {% endif %}
-
+            {% endblock %}
           </div>
-
-          <div class="basis-full md:basis-7/12 p-4">
+          {% block attach_leagues %}
+          <div id="attach-leagues" class="basis-full md:basis-7/12 p-4">
 
             <label class="text-sm font-medium text-gray-900 block mb-2">
-              Select League(s)
+              Attach League(s)
             </label>
 
             {% if not leagues %}
             <p class="p-2.5 text text-spaceteal-400">
-            No leagues available to select
+            No leagues available to attach
             </p>
             {% else %}
 
-            <div x-data="{
-              options: [],
-              open: false,
-              filter: ''
-              }" class="w-full relative">
-
-                <div @click="open = !open" class="p-3 rounded-lg flex gap-2 w-full border border-neutral-300 cursor-pointer truncate h-12 bg-white" x-text="options.length + ' Leagues selected'">
-                </div>
-
-                <div class="p-3 rounded-lg flex gap-3 w-full shadow-lg x-50 absolute flex-col bg-white mt-3" x-show="open" x-trap="open" @click.outside="open = false" @keydown.escape.window="open = false" x-transition:enter=" ease-[cubic-bezier(.3,2.3,.6,1)] duration-200" x-transition:enter-start="!opacity-0 !mt-0" x-transition:enter-end="!opacity-1 !mt-3" x-transition:leave=" ease-out duration-200" x-transition:leave-start="!opacity-1 !mt-3" x-transition:leave-end="!opacity-0 !mt-0">
-                  <input x-model="filter" placeholder="Search" class="border-b outline-none p-3 -mx-3 pt-0" type="text">
-                  <p x-show="! $el.parentNode.innerText.toLowerCase().includes(filter.toLowerCase())" class="text-neutral-400 text-center font-bolc text-2xl">
-                      –
-                  </p>
-
-                  {% for league in leagues %}
-                  <div x-show="$el.innerText.toLowerCase().includes(filter.toLowerCase())" class="flex items-center">
-                      <input x-model="options" name="{{league.name}}" id="{{league.name}}" type="checkbox" value="{{league.id}}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                      <label for="{{league.name}}" class="ml-2 text-sm font-medium text-gray-900 flex-grow">{{league.name}}</label>
-                  </div>
-                  {% endfor %}
-                </div>
-
-            </div>
+            <select
+              multiple
+              name="leagues"
+              id="leagues"
+              class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5 mb-3"
+            >
+              {% for league in leagues %}
+              <option value="{{ league.id }}">{{ league.name }}</option>
+              {% endfor %}
+            </select>
 
             {% endif %}
+            <button hx-post="/iesl-admin/season/attach-leagues"
+                    hx-target="#attach-leagues"
+                    hx-swap="outerHTML"
+                    hx-include="[name=leagues]"
 
+            class="text-sm py-1 px-2 rounded bg-sapphire_blue-400 hover:bg-sapphire_blue-500 text-white py-1 px-3 block mt-1">Attach</button>
           </div>
+          {% endblock %}
           <input hidden type="text" name="id" value="{{season.id}}">
           {% block confirmation_buttons %}
           <div id="save-cancel" class="flex flex-col items-center py-4 pt-28 w-full">

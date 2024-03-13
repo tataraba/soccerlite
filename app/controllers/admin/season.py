@@ -10,7 +10,7 @@ from litestar.datastructures import CacheControlHeader
 from litestar.enums import RequestEncodingType
 from litestar.params import Body
 from litestar.response import Redirect, Template
-
+from advanced_alchemy.filters import CollectionFilter
 from app.controllers import urls
 from app.core.response import htmx_template
 from app.dto import SeasonCreateDTO, SeasonUpdateDTO
@@ -129,7 +129,8 @@ class AdminSeasonController(Controller):
     ) -> Template:
         season_data = await season_repo.get_by_slug(slug)
         if season_data:
-            leagues, _ = await season_repo.get_season_leagues(season_id=season_data.id)
+            # leagues, _ = await season_repo.get_season_leagues(season_id=season_data.id)
+            leagues = await league_repo.list_without_schedule()
         if season_data:
             season = season_data.to_dict()
         request.logger.info(f"leagues {leagues}")
@@ -157,10 +158,30 @@ class AdminSeasonController(Controller):
         season_service: SeasonService,
         data: Annotated[Season, Body(media_type=RequestEncodingType.URL_ENCODED)],
     ) -> Redirect:
+        request.logger.info(f"admin season edit: {data.to_dict()}")
         await season_service.update(
             data=data, item_id=data.id, auto_commit=True
         )  # write to database
         return Redirect(path=urls.ADMIN_SEASON)
+
+    @post(
+        [urls.ADMIN_SEASON_ATTACH_LEAGUES],
+        status_code=HTTPStatus.CREATED,
+        name="post_season_attach_leagues",
+        dependencies={"season_service": provide_season_service, "league_repo": provide_league_repo},
+    )
+    async def post_season_attach_leagues(
+        self,
+        request: HTMXRequest,
+        season_service: SeasonService,
+        league_repo: LeagueRepo,
+        data: Annotated[dict, Body(media_type=RequestEncodingType.URL_ENCODED)],
+    ) -> Template:
+        request.logger.info(f"admin season attach leagues: {data}")
+        leagues = await league_repo.list(CollectionFilter("id", data["leagues"]))
+        request.logger.info(f"{leagues=}")
+        _ = await season_service.update(item_id=data["id"], data={"leagues": leagues}, auto_commit=True)
+        return htmx_template(template_name="admin/partials/season-edit.html", block_name="attach_leagues")
 
 
     @get(

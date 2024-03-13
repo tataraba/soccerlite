@@ -18,6 +18,18 @@ __all__ = [
 class LeagueRepo(SQLAlchemyAsyncSlugRepository[models.League]):
     model_type = models.League
 
+    async def list_without_season(
+        self,
+        *filters: FilterTypes,
+        **kwargs: Any,
+    ) -> list[models.League]:
+        return await self.list(
+            *filters,
+            statement=select(models.League).filter(
+                models.League.season == None
+            ),  # noqa: E711
+        )
+
     async def list_without_schedule(
         self,
         *filters: FilterTypes,
@@ -25,7 +37,9 @@ class LeagueRepo(SQLAlchemyAsyncSlugRepository[models.League]):
     ) -> list[models.League]:
         return await self.list(
             *filters,
-            statement=select(models.League).filter(models.League.schedule == None),  # noqa: E711
+            statement=select(models.League).filter(
+                models.League.schedule == None
+            ),  # noqa: E711
         )
 
 
