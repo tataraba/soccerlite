@@ -4,13 +4,14 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Annotated
 
 from advanced_alchemy.exceptions import ConflictError, NotFoundError
+from advanced_alchemy.filters import CollectionFilter
 from litestar import Controller, delete, get, post
 from litestar.contrib.htmx.request import HTMXRequest
 from litestar.datastructures import CacheControlHeader
 from litestar.enums import RequestEncodingType
 from litestar.params import Body
 from litestar.response import Redirect, Template
-from advanced_alchemy.filters import CollectionFilter
+
 from app.controllers import urls
 from app.core.response import htmx_template
 from app.dto import SeasonCreateDTO, SeasonUpdateDTO
@@ -130,7 +131,7 @@ class AdminSeasonController(Controller):
         season_data = await season_repo.get_by_slug(slug)
         if season_data:
             # leagues, _ = await season_repo.get_season_leagues(season_id=season_data.id)
-            leagues = await league_repo.list_without_schedule()
+            leagues = await league_repo.list_without_season()
         if season_data:
             season = season_data.to_dict()
         request.logger.info(f"leagues {leagues}")
@@ -168,7 +169,10 @@ class AdminSeasonController(Controller):
         [urls.ADMIN_SEASON_ATTACH_LEAGUES],
         status_code=HTTPStatus.CREATED,
         name="post_season_attach_leagues",
-        dependencies={"season_service": provide_season_service, "league_repo": provide_league_repo},
+        dependencies={
+            "season_service": provide_season_service,
+            "league_repo": provide_league_repo,
+        },
     )
     async def post_season_attach_leagues(
         self,
@@ -176,13 +180,21 @@ class AdminSeasonController(Controller):
         season_service: SeasonService,
         league_repo: LeagueRepo,
         data: Annotated[dict, Body(media_type=RequestEncodingType.URL_ENCODED)],
-    ) -> Template:
-        request.logger.info(f"admin season attach leagues: {data}")
-        leagues = await league_repo.list(CollectionFilter("id", data["leagues"]))
-        request.logger.info(f"{leagues=}")
-        _ = await season_service.update(item_id=data["id"], data={"leagues": leagues}, auto_commit=True)
-        return htmx_template(template_name="admin/partials/season-edit.html", block_name="attach_leagues")
-
+    ) -> Template | Redirect:
+        request.logger.info(f"admin season edit: {data}")
+        season = await season_service.get(data["id"])
+        if not isinstance(data["leagues"], list):
+            data["leagues"] = [data["leagues"]]
+        for league_id in data["leagues"]:
+            league = await league_repo.get(league_id)
+            league.season_id = season.id
+            _ = await league_repo.update(league)
+        leagues = await league_repo.list_without_season()
+        return htmx_template(
+            template_name="admin/partials/season-edit.html",
+            context={"season": season, "leagues": leagues},
+            block_name="attach_leagues",
+        )
 
     @get(
         [urls.ADMIN_SEASON_END_DATE],
@@ -190,7 +202,11 @@ class AdminSeasonController(Controller):
         name="get_season_end_date",
     )
     async def get_season_end_date(self, request: HTMXRequest) -> Template:
-        return htmx_template(template_name="admin/partials/season-edit.html", context={"show_end_date": True}, block_name="end_season")
+        return htmx_template(
+            template_name="admin/partials/season-edit.html",
+            context={"show_end_date": True},
+            block_name="end_season",
+        )
 
     @post(
         [urls.ADMIN_SEASON_SEARCH],

@@ -32,7 +32,4 @@ class SeasonCreateDTO(SQLAlchemyDTO[Season]):
 class SeasonUpdateDTO(SQLAlchemyDTO[Season]):
     config = SQLAlchemyDTOConfig(
         partial=True,
-        exclude={
-            "leagues",
-        },
     )

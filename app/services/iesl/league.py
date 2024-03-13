@@ -25,9 +25,7 @@ class LeagueRepo(SQLAlchemyAsyncSlugRepository[models.League]):
     ) -> list[models.League]:
         return await self.list(
             *filters,
-            statement=select(models.League).filter(
-                models.League.season == None
-            ),  # noqa: E711
+            statement=select(models.League).filter(models.League.season_id == None),  # noqa: E711
         )
 
     async def list_without_schedule(
@@ -37,9 +35,7 @@ class LeagueRepo(SQLAlchemyAsyncSlugRepository[models.League]):
     ) -> list[models.League]:
         return await self.list(
             *filters,
-            statement=select(models.League).filter(
-                models.League.schedule == None
-            ),  # noqa: E711
+            statement=select(models.League).filter(models.League.schedule == None),  # noqa: E711
         )
 
 

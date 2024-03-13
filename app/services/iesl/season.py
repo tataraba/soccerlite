@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 from uuid import UUID
 
@@ -75,5 +76,6 @@ class SeasonService(SQLAlchemyAsyncRepositoryService[models.Season]):
     async def to_model(
         self, data: models.Season | dict[str, Any], operation: str | None = None
     ) -> models.Season:
+        logging.info(f"to_model: {data}")
         data = await self.repository.include_slug_in_data(data)
         return await super().to_model(data, operation)

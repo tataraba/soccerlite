@@ -10,7 +10,7 @@
     <div id="schedule-instruction" class="flex flex-row flex-wrap pt-4 w-2/5 gap-1">
       <div class="w-auto uppercase text-xs text-spaceteal-500">Instruction</div>
       <div class="flex basis-full items-center">
-        <p class="text-xs text-spaceteal-600 w-auto"><span class="font-bold">Attach League(s)</span> will link existing leagues to this season.</p>
+        <p class="text-xs text-spaceteal-600 w-auto"><span class="font-bold">Attach League(s)</span> will link available leagues to this season.</p>
       </div>
       <div class="flex basis-full items-center">
         <p class="text-xs text-spaceteal-600 w-auto">The <span class="font-bold">End Season</span> date will inactivate season, and will not be available for scheduling</p>
@@ -109,13 +109,14 @@
               {% endfor %}
             </select>
 
-            {% endif %}
+            <input hidden type="text" name="slug" value="{{season.slug}}">
             <button hx-post="/iesl-admin/season/attach-leagues"
                     hx-target="#attach-leagues"
                     hx-swap="outerHTML"
-                    hx-include="[name=leagues]"
-
+                    hx-params="leagues, id, slug"
             class="text-sm py-1 px-2 rounded bg-sapphire_blue-400 hover:bg-sapphire_blue-500 text-white py-1 px-3 block mt-1">Attach</button>
+            {% endif %}
+            
           </div>
           {% endblock %}
           <input hidden type="text" name="id" value="{{season.id}}">
