@@ -82,7 +82,7 @@
                       altFormat: 'M d, Y - h:i K',
                       dateFormat: 'Z',
                       allowInput: true,
-                      defaultDate: '{{fixture.game_date.strftime("%Y-%m-%d %H:%M")}}',});"
+                      defaultDate: '{{utc_to_pst(fixture.game_date).strftime("%Y-%m-%d %H:%M")}}',});"
                   >
                   <input name="game_date" id="game_date" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" class="text-xs sm:text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-5/6 p-1" />
                 </div>

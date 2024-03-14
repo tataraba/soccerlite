@@ -1,7 +1,10 @@
 import re
 import unicodedata
+from datetime import datetime
 from importlib.util import find_spec
 from pathlib import Path
+
+from dateutil import tz
 
 
 def module_to_os_path(module_name: str) -> str:
@@ -43,3 +46,10 @@ def slugify(
     if separator is not None:
         return re.sub(r"[-\s]+", "-", value).strip("-_").replace("-", separator)
     return re.sub(r"[-\s]+", "-", value).strip("-_")
+
+
+def convert_utc_to_pst(utc_datetime: datetime) -> datetime:
+    pst_timezone = tz.gettz("America/Los_Angeles")
+    localized_datetime = utc_datetime.replace(tzinfo=tz.tzutc())
+    converted_datetime = localized_datetime.astimezone(pst_timezone)
+    return converted_datetime

@@ -16,6 +16,7 @@ from litestar.response import Redirect, Template
 
 from app.controllers import urls
 from app.core.response import htmx_template
+from app.core.toolbox import convert_utc_to_pst
 from app.dto import (
     FixtureCreateDTO,
     FixtureDTO,
@@ -84,6 +85,7 @@ class AdminFixtureController(Controller):
             "teams": teams,
             "game_status": FixtureStatus,
             "field": Field,
+            "utc_to_pst": convert_utc_to_pst,
             "cancelled": True,
         }
         return htmx_template(
