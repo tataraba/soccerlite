@@ -112,6 +112,7 @@ class AdminFixtureController(Controller):
         data: Annotated[Fixture, Body(media_type=RequestEncodingType.URL_ENCODED)],
     ) -> Template | Redirect:
         fixtures = []
+        request.logger.info(f"{data.to_dict()=}")
         try:
             fixture = await fixture_service.update(
                 data=data.to_dict(), item_id=data.id, auto_commit=True
@@ -122,6 +123,7 @@ class AdminFixtureController(Controller):
         finally:
             # ignore the validation error but dont issue post
             pass
+        # request.logger.info(f"{fixture.team_away_name=}")
         schedule = await schedule_repo.get(fixture.schedule_id)
         teams = await team_repo.list_from_league(league_id=schedule.league_id)
         fixtures.append(fixture)

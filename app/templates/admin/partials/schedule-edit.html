@@ -104,12 +104,12 @@
                   <div id="score" class="absolute -top-6 right-1"><span class="text-xs text-spaceteal-500 uppercase">score</span></div>
                   <div class="flex flex-row items-center">
                     <p class="hidden sm:block w-8 font-bold text-spaceteal-500">H</p>
-                    <select name="team_home_name" id="team_home_name" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1" required="">
+                    <select name="team_home" id="team_home" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1" required="">
                       {% for team in teams %}
                         {% if team.name == fixture.team_home_name %}
-                        <option value="{{ team.name }}" selected>{{ team.name }}</option>
+                        <option value="{{ team.id }}" selected>{{ team.name }}</option>
                         {% else %}
-                        <option value="{{ team.name }}">{{ team.name }}</option>
+                        <option value="{{ team.id }}">{{ team.name }}</option>
                         {% endif %}
                       {% endfor %}
                     </select>
@@ -121,12 +121,12 @@
                 <div id="fixture-away-team" class="flex flex-row w-full justify-between">
                   <div class="flex flex-row items-center">
                     <p class="hidden sm:block w-8 font-bold text-spaceteal-500">A</p>
-                    <select name="team_away_name" id="team_away_name" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1" required="">
+                    <select name="team_away" id="team_away" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block p-1" required="">
                       {% for team in teams %}
                         {% if team.name == fixture.team_away_name %}
-                        <option value="{{ team.name }}" selected>{{ team.name }}</option>
+                        <option value="{{ team.id }}" selected>{{ team.name }}</option>
                         {% else %}
-                        <option value="{{ team.name }}">{{ team.name }}</option>
+                        <option value="{{ team.id }}">{{ team.name }}</option>
                         {% endif %}
                       {% endfor %}
                     </select>
