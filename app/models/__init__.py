@@ -8,20 +8,26 @@ from .auth import (
 )
 from .base import DatabaseModel, TimestampedDatabaseModel, orm_registry
 from .iesl import (
+    Category,
+    Division,
     Field,
     Fixture,
+    FixtureResult,
     FixtureStatus,
     FixtureTeam,
-    FixtureResult,
     League,
+    MatchDay,
     Schedule,
     Season,
-    Team,
     Standings,
+    Team,
 )
 
 __all__ = [
     "League",
+    "Category",
+    "Division",
+    "MatchDay",
     "Season",
     "Schedule",
     "Standings",

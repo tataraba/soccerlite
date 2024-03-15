@@ -33,7 +33,6 @@ class Division(str, Enum):
     B = "B"
     C = "C"
     D = "D"
-    NA = "N/A"
 
 
 class MatchDay(str, Enum):

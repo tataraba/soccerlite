@@ -3,12 +3,11 @@
       <div class="flex flex-col px-6">
         <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">Leagues</h3>
           <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
-            <li class="text-spaceteal-200">New League</li>
-            <!-- <li class="text-spaceteal-200">Edit League</li> -->
+            <li class="text-spaceteal-200">Edit League</li>
           </ul>
       </div>
     </div>
-  
+
     <div id="admin-page-content" class="flex flex-col items-center w-full px-2 pt-6 md:pt-14">
       <div id="admin-league-form" class="flex flex-col items-center w-full px-2">
         <form
@@ -16,145 +15,147 @@
           enctype="application/x-www-form-urlencoded"
           action="/iesl-admin/league/{{ league.slug }}"
           class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
-  
-          <div class="basis-full p-4 md:basis-auto md:w-2/5">
-            <label for="category" class="text-sm font-medium text-gray-900 block mb-2">Category</label>
-            <select name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-              <option value="{{ league.category }}" selected><span class="text-spaceteal-700">Current: {{ league.category }}</span></option>
-              <option value="Men's">Men's</option>
-              <option value="Women's">Women's</option>
-              <option value="Coed">Coed</option>
-            </select>
-            <p class="text-xs px-2 pt-2 text-sapphire_blue-700">Current: {{ league.category }}</p>
-          </div>
-  
-          <div class="basis-full md:basis-2/5 p-4">
-            <label for="team_size" class="text-sm font-medium text-gray-900 block mb-2">Team Size</label>
-            <select name="team_size" id="team_size" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-              <option value="{{ league.team_size }}" selected>Current: {{ league.team_size }} v {{ league.team_size }}</option>
-              <option value="11">11 v 11</option>
-              <option value="7">7 v 7</option>
-            </select>
-            <p class="text-xs px-2 pt-2 text-sapphire_blue-700">Current: {{ league.team_size }}</p>
-          </div>
-  
-          <div class="basis-full md:basis-1/5 p-4">
-            <label for="division" class="text-sm font-medium text-gray-900 block mb-2">Division</label>
-            <select name="division" id="division" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-              <option value="{{ league.division }}" selected>Current: {{ league.division }}</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-              <option value="N/A">N/A</option>
-            </select>
-            <p class="text-xs px-2 pt-2 text-sapphire_blue-700">Current: Div {{ league.division }}</p>
-          </div>
-          <div class="basis-full md:basis-1/2 p-4">
-            <label for="male_age_over" class="text-sm font-medium text-gray-900 block mb-2">Age Group (Men's)</label>
-            <select name="male_age_over" id="male_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-              <option value="{{ league.male_age_over }}" selected>Current: {{ league.male_age_over }}</option>
-              <option value="0">Open</option>
-              <option value="30">Over 30</option>
-              <option value="40">Over 40</option>
-              <option value="50">Over 50</option>
-            </select>
-            {% if (league.male_age_over == 0) or (league.male_age_over is none) %}
-            <p class="text-xs px-2 pt-2 text-sapphire_blue-700">Current: Open</p>
-            {% else %}
-            <p class="text-xs px-2 pt-2 text-sapphire_blue-700">Current: {{ league.male_age_over }}</p>
-            {% endif %}
-          </div>
-          <div class="basis-full md:basis-1/2 p-4">
-            <label for="female_age_over" class="text-sm font-medium text-gray-900 block mb-2">Age Group (Women's)</label>
-            <select name="female_age_over" id="female_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-              <option value="{{ league.female_age_over }}" selected>Current: {{ league.female_age_over }}</option>
-              <option value="0">Open</option>
-              <option value="30">Over 30</option>
-              <option value="40">Over 40</option>
-              <option value="50">Over 50</option>
-            </select>
-            {% if (league.female_age_over == 0) or (league.female_age_over is none) %}
-            <p class="text-xs px-2 pt-2 text-sapphire_blue-700">Current: Open</p>
-            {% else %}
-            <p class="text-xs px-2 pt-2 text-sapphire_blue-700">Current: {{ league.female_age_over }}</p>
-            {% endif %}
-          </div>
-          <div class="basis-full md:basis-1/2 p-4">
-            <div>
-                <label for="day_of_week" class="text-sm font-medium text-gray-900 block mb-2">Day of Week</label>
-                <select name="day_of_week" id="day_of_week" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-                <option value="{{ league.day_of_week }}" selected>Current: {{ league.day_of_week }}</option>
-                <option value="Sunday">Sunday</option>
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-                </select>
-                <p class="text-xs px-2 pt-2 text-sapphire_blue-700">Current: {{ league.day_of_week }}</p>
-            </div>
-                <div class="pt-8">
-                <label for="name" class="text-sm font-medium text-gray-900 block mb-2">League Name</label>
-                <input type="text" name="name" id="name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="Team Name FC”" value="{{ league.name }}">
-                </div>
-            </div>
-            <div class="basis-full md:basis-1/2 p-4">
-                <label for="season_id" class="text-sm font-medium text-gray-900 block mb-2">Season</label>
 
-                <select name="season_id" id="season_id" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-                  <option value="null" selected>Select Season</option>
-                  {% if seasons %}
-                  {% for season in seasons %}
-                  {% if season.id == league.season_id %}
-                  <option hidden value="{{ season.id }}">{{ season.name }}</option>
+          <div id="league-create-section-1" class="flex flex-row flex-wrap items-center w-full">
+            <div class="basis-full p-4 md:basis-auto w-1/2">
+              <label for="category" class="text-sm font-medium text-gray-900 block mb-2">Category</label>
+              <select name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+                {% for category in categories %}
+                  {% if category.value == league.category %}
+                    <option value="{{ category.value }}" selected><span class="text-spaceteal-700">Current: {{ category.value }}</span></option>
                   {% else %}
-                  <option value="{{ season.id }}">{{ season.name }}</option>
-                  {% endif %}
-                  {% endfor %}
-                  <p>Current: {{ _season }}</p>
-                </select>
-                {% for season in seasons %}
-                  {% if season.id == league.season_id %}
-                  <p class="text-xs px-2 py-2 text-sapphire_blue-700">Current: {{ season.name }}</p>
+                    <option value="{{ category.value }}">{{ category.value }}</option>
                   {% endif %}
                 {% endfor %}
-
-                {% else %}
-                <option value="null" selected>Select Season</option>
-                <p class="text-xs font-medium text-rose_iesl-400">Must create Season before attaching to league.</p>
-                {% endif %}
+              </select>
             </div>
-            <input hidden type="text" name="id" value="{{league.id}}">
-            {% block confirmation_buttons %}
-            <div  id="create-cancel" class="flex flex-col items-center pt-20 w-full">
-
-            <button type="submit" class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">SAVE</button>
-
-            <!-- button to cancel the form-->
-            <a href="/iesl-admin/league" 
-               class="basis-auto w-1/2 mx-auto my-6 text-gray-500 bg-white hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Cancel</a>
-
+            <div class="basis-1/3 w-1/3 md:basis-1/4 md:w-1/4 p-4">
+              <label for="team_size" class="text-sm font-medium text-gray-900 block mb-2">Team Size</label>
+              <input name="team_size" id="team_size" type="number" min="3" max="11" value="{{ league.team_size }}" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="" />
             </div>
-            {% endblock %}
-            {% block delete_confirm %}
-            {% if confirm %}
-            <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
-                <a hx-delete="/iesl-admin/league/delete/{{league.slug}}"
-                   hx-headers='{"league_id":"{{league.id}}", "confirm":"true"}'
-                   hx-target="#admin-main-panel"
-                   class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">ARE YOU SURE?</a>
+            <div class="basis-1/3 w-1/3 md:basis-1/4 md:w-1/4 p-4">
+              <label for="division" class="text-sm font-medium text-gray-900 block mb-2">Division</label>
+              <select name="division" id="division" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+                {% for division in divisions %}
+                  {% if division.value == league.division %}
+                    <option value="{{ division.value }}" selected><span class="text-spaceteal-700">Current: {{ division.value }}</span></option>
+                  {% else %}
+                    <option value="{{ division.value }}">{{ division.value }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
             </div>
-            {% else %}
-            <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
-                <a hx-get="/iesl-admin/league/delete/{{league.slug}}"
-                hx-target="#delete-confirm"
-                hx-swap="outerHTML"
-                class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-400 hover:border-red-700 hover:cursor-pointer focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">DELETE LEAGUE</a>
+          </div>
+          {% block age_over %}
+          <div id="league-create-section-2" class="flex flex-row flex-wrap items-center w-full">
+            {% if league.category == "Men's" or league.category == "Coed" %}
+            <div id="men-age-over" class="basis-2/3 md:basis-1/2 md:w-1/2 p-4">
+              <label for="male_age_over" class="text-sm font-medium text-gray-900 block mb-2">Men's Age Group</label>
+              <select name="male_age_over" id="male_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+                {% for age in ages %}
+                  {% if age == league.male_age_over %}
+                    {% if age == 0 %}
+                      <option value="{{ age }}" selected><span class="text-spaceteal-700">Current: Open</span></option>
+                    {% else %}
+                      <option value="{{ age }}" selected><span class="text-spaceteal-700">Current: Over {{ age }}</span></option>
+                    {% endif %}
+                  {% elif age == 0%}
+                    <option value="{{ age }}" selected>Open</option>
+                  {% else %}
+                    <option value="{{ age }}">Over {{ age }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
             </div>
             {% endif %}
-            {% endblock %}
+            {% if league.category == "Women's" or league.category == "Coed" %}
+            <div id="female-age-over" class="basis-2/3 md:basis-1/2 md:w-1/2 p-4">
+              <label for="female_age_over" class="text-sm font-medium text-gray-900 block mb-2">Women's Age Group</label>
+              <select name="female_age_over" id="female_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+                {% for age in ages %}
+                  {% if age == league.female_age_over %}
+                    {% if age == 0 %}
+                      <option value="{{ age }}" selected><span class="text-spaceteal-700">Current: Open</span></option>
+                    {% else %}
+                      <option value="{{ age }}" selected><span class="text-spaceteal-700">Current: Over {{ age }}</span></option>
+                    {% endif %}
+                  {% elif age == 0%}
+                    <option value="{{ age }}" selected>Open</option>
+                  {% else %}
+                    <option value="{{ age }}">Over {{ age }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          {% endif %}
+          {% endblock %}
+
+          <div id="league-create-section-3" class="flex flex-row flex-wrap items-center w-full">
+            <div class="basis-2/3 md:basis-1/2 md:w-1/2 p-4">
+              <label for="day_of_week" class="text-sm font-medium text-gray-900 block mb-2">Game Day</label>
+              <select name="day_of_week" id="day_of_week" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+                {% for day in match_days %}
+                  {% if day.value == league.day_of_week %}
+                    <option value="{{ day.value }}" selected><span class="text-spaceteal-700">Current: {{ day.value }}</span></option>
+                  {% else %}
+                    <option value="{{ day.value }}">{{ day.value }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="basis-full md:basis-1/2 p-4">
+              <label for="season_id" class="text-sm font-medium text-gray-900 block mb-2">Season</label>
+
+              <select name="season_id" id="season_id" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+                {% if seasons %}
+                  {% for season in seasons %}
+                    {% if season.id == league.season_id %}
+                      <option value="{{ season.id }}" selected>Current: {{ season.name }}</option>
+                    {% else %}
+                      <option value="{{ season.id }}" > {{ season.name }}</option>
+                    {% endif %}
+                  {% endfor %}
+                <p>Current: {{ _season }}</p>
+              </select>
+
+              {% else %}
+              <option value="null" selected>Select Season</option>
+              <p class="text-xs font-medium text-rose_iesl-400">Must create Season before attaching to league.</p>
+              {% endif %}
+          </div>
+
+          <div id="league-create-section-4" class="flex flex-col items-left w-full md:w-1/2">
+            <div  class="basis-full md:basis-1/2 p-4"">
+              <label for="name" class="text-sm font-medium text-gray-900 block mb-2">League Name</label>
+              <input type="text" name="name" id="name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" value="{{ league.name }}"" required="">
+            </div>
+          </div>
+          <input hidden type="text" name="id" value="{{league.id}}">
+          {% block confirmation_buttons %}
+          <div  id="create-cancel" class="flex flex-col items-center pt-20 w-full">
+            <button type="submit" class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">SAVE</button>
+            <a href="/iesl-admin/league" class="basis-auto w-1/2 mx-auto my-6 text-gray-500 bg-white hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Cancel</a>
+          </div>
+          {% endblock %}
+          {% block delete_confirm %}
+          {% if confirm %}
+          <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
+            <a hx-delete="/iesl-admin/league/delete/{{league.slug}}"
+               hx-headers='{"league_id":"{{league.id}}", "confirm":"true"}'
+               hx-target="#admin-main-panel"
+               class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-700 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">ARE YOU SURE?</a>
+          </div>
+          {% else %}
+          <div id="delete-confirm" class="flex items-center pt-2 pb-8 w-full">
+            <a hx-get="/iesl-admin/league/delete/{{league.slug}}"
+               hx-target="#delete-confirm"
+               hx-swap="outerHTML"
+               class="basis-auto w-1/2 mx-auto my-6 text-white bg-red-400 hover:border-red-700 hover:cursor-pointer focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center">DELETE LEAGUE</a>
+          </div>
+          {% endif %}
+          {% endblock %}
         </form>
       </div>
     </div>

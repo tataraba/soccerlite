@@ -13,8 +13,8 @@ from litestar.response import Redirect, Template
 
 from app.controllers import urls
 from app.core.response import htmx_template
-from app.dto import LeagueCreateDTO, LeagueReadDTO, LeagueUpdateDTO
-from app.models import League
+from app.dto import LeagueCreateDTO, LeagueUpdateDTO
+from app.models import Category, Division, League, MatchDay
 from app.services import (
     provide_league_repo,
     provide_league_service,
@@ -125,6 +125,10 @@ class AdminLeagueController(Controller):
                     "league": league_data,
                     "show_end_date": True,
                     "seasons": seasons,
+                    "divisions": Division,
+                    "categories": Category,
+                    "match_days": MatchDay,
+                    "ages": [0, 20, 30, 40, 50],
                 },
             )
         return htmx_template(template_name="admin/dashboard.html")

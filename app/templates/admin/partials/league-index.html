@@ -8,23 +8,8 @@
                   hx-target="#admin-main-panel"
                   hx-swap="outerHTML"
                   hx-push-url="true"
-                  class="hover:text-opal-500 hover:cursor-pointer">New League</a></li>
-
-            {% if view == "tile_view" %}  
-            <li><a 
-                  hx-get="/iesl-admin/league"
-                  hx-headers='{"view": "list_view"}'
-                  hx-target="#admin-main-panel"
-                  hx-swap="outerHTML"
-                  class="hover:text-opal-500 hover:cursor-pointer">List View</a></li>
-            {% else %}
-            <li><a 
-                  hx-get="/iesl-admin/league"
-                  hx-headers='{"view": "tile_view"}'
-                  hx-target="#admin-main-panel"
-                  hx-swap="outerHTML"
-                  class="hover:text-opal-500 hover:cursor-pointer">Tile View</a></li>
-            {% endif %}
+                  class="hover:text-opal-500 hover:cursor-pointer">New League</a>
+            </li>
           </ul>
       </div>
     </div>
