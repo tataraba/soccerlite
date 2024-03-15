@@ -133,6 +133,7 @@ class AdminFixtureController(Controller):
             "fixtures": fixtures,
             "teams": teams,
             "game_status": FixtureStatus,
+            "utc_to_pst": convert_utc_to_pst,
             "field": Field,
             "updated": True,
         }
