@@ -26,9 +26,9 @@
                     hx-swap="outerHTML"
                     name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
               <option selected value="">--</option>
-              <option value="MEN">Men's</option>
-              <option value="WOMEN">Women's</option>
-              <option value="COED">Coed</option>
+              <option value="Men's">Men's</option>
+              <option value="Women's">Women's</option>
+              <option value="Coed">Coed</option>
             </select>
           </div>
           <div class="basis-1/3 w-1/3 md:basis-1/4 md:w-1/4 p-4">
@@ -47,27 +47,27 @@
         </div>
         {% block age_over %}
         <div id="league-create-section-2" class="flex flex-row flex-wrap items-center w-full">
-          {% if category == "MEN" or category == "COED" %}
+          {% if category == "Men's" or category == "Coed" %}
           <div id="men-age-over" class="basis-2/3 md:basis-1/2 md:w-1/2 p-4">
             <label for="male_age_over" class="text-sm font-medium text-gray-900 block mb-2">Men's Age Group</label>
             <select name="male_age_over" id="male_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
               <option value="0" selected>Open</option>
-              <option value="5">Over 20</option>
-              <option value="10">Over 30</option>
-              <option value="15">Over 40</option>
-              <option value="15">Over 50</option>
+              <option value="20">Over 20</option>
+              <option value="30">Over 30</option>
+              <option value="40">Over 40</option>
+              <option value="50">Over 50</option>
             </select>
           </div>
           {% endif %}
-          {% if category == "WOMEN" or category == "COED" %}
+          {% if category == "Women's" or category == "Coed" %}
           <div id="female-age-over" class="basis-2/3 md:basis-1/2 md:w-1/2 p-4">
             <label for="female_age_over" class="text-sm font-medium text-gray-900 block mb-2">Women's Age Group</label>
             <select name="female_age_over" id="female_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
               <option value="0" selected>Open</option>
-              <option value="5">Over 20</option>
-              <option value="10">Over 30</option>
-              <option value="15">Over 40</option>
-              <option value="15">Over 50</option>
+              <option value="20">Over 20</option>
+              <option value="30">Over 30</option>
+              <option value="40">Over 40</option>
+              <option value="50">Over 50</option>
             </select>
           </div>
           {% endif %}
@@ -111,7 +111,8 @@
                   hx-post="/iesl-admin/league/search"
                   hx-trigger="input changed delay:500ms, search"
                   hx-target="#create-cancel"
-                  hx-swap="outerHTML" 
+                  hx-swap="outerHTML"
+                  hx-params="name"
                   type="text" name="name" id="name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="Team Name FC”" required="">
           </div>
         </div>

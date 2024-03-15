@@ -13,7 +13,7 @@ from litestar.response import Redirect, Template
 
 from app.controllers import urls
 from app.core.response import htmx_template
-from app.dto import LeagueCreateDTO, LeagueUpdateDTO
+from app.dto import LeagueCreateDTO, LeagueReadDTO, LeagueUpdateDTO
 from app.models import League
 from app.services import (
     provide_league_repo,
