@@ -36,6 +36,7 @@ ADMIN_LEAGUE_CREATE = "/iesl-admin/league/create"
 ADMIN_LEAGUE_EDIT = "/iesl-admin/league/{slug:str}"
 ADMIN_LEAGUE_DELETE = "/iesl-admin/league/delete/{slug:str}"
 ADMIN_LEAGUE_SEARCH = "/iesl-admin/league/search"
+ADMIN_LEAGUE_AGE_OVER = "/iesl-admin/league/age-over"
 
 ADMIN_TEAM = "/iesl-admin/team"
 ADMIN_TEAM_CREATE = "/iesl-admin/team/create"

@@ -17,62 +17,66 @@
       <form
         method="post"
         class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
-
-        <div class="basis-full p-4 md:basis-auto md:w-2/5">
-          <label for="category" class="text-sm font-medium text-gray-900 block mb-2">Category</label>
-          <select name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
-            <option value="" selected>Select a Category</option>
-            <option value="Men's">Men's</option>
-            <option value="Women's">Women's</option>
-            <option value="Coed">Coed</option>
-          </select>
+        <div id="league-create-section-1" class="flex flex-row flex-wrap items-center w-full">
+          <div class="basis-full p-4 md:basis-auto w-1/2">
+            <label for="category" class="text-sm font-medium text-gray-900 block mb-2">Category</label>
+            <select hx-get="/iesl-admin/league/age-over"
+                    hx-trigger="change"
+                    hx-target="#league-create-section-2"
+                    hx-swap="outerHTML"
+                    name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+              <option selected value="">--</option>
+              <option value="MEN">Men's</option>
+              <option value="WOMEN">Women's</option>
+              <option value="COED">Coed</option>
+            </select>
+          </div>
+          <div class="basis-1/3 w-1/3 md:basis-1/4 md:w-1/4 p-4">
+            <label for="team_size" class="text-sm font-medium text-gray-900 block mb-2">Team Size</label>
+            <input name="team_size" id="team_size" type="number" min="3" max="11" value="11" class="text-sm bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="" />
+          </div>
+          <div class="basis-1/3 w-1/3 md:basis-1/4 md:w-1/4 p-4">
+            <label for="division" class="text-sm font-medium text-gray-900 block mb-2">Division</label>
+            <select name="division" id="division" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+              <option value="A" selected>A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
         </div>
-
-        <div class="basis-full md:basis-2/5 p-4">
-          <label for="team_size" class="text-sm font-medium text-gray-900 block mb-2">Team Size</label>
-          <select name="team_size" id="team_size" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
-            <option value="" selected>Select Team Size</option>
-            <option value="11">11 v 11</option>
-            <option value="7">7 v 7</option>
-          </select>
+        {% block age_over %}
+        <div id="league-create-section-2" class="flex flex-row flex-wrap items-center w-full">
+          {% if category == "MEN" or category == "COED" %}
+          <div id="men-age-over" class="basis-2/3 md:basis-1/2 md:w-1/2 p-4">
+            <label for="male_age_over" class="text-sm font-medium text-gray-900 block mb-2">Men's Age Group</label>
+            <select name="male_age_over" id="male_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+              <option value="0" selected>Open</option>
+              <option value="5">Over 20</option>
+              <option value="10">Over 30</option>
+              <option value="15">Over 40</option>
+              <option value="15">Over 50</option>
+            </select>
+          </div>
+          {% endif %}
+          {% if category == "WOMEN" or category == "COED" %}
+          <div id="female-age-over" class="basis-2/3 md:basis-1/2 md:w-1/2 p-4">
+            <label for="female_age_over" class="text-sm font-medium text-gray-900 block mb-2">Women's Age Group</label>
+            <select name="female_age_over" id="female_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
+              <option value="0" selected>Open</option>
+              <option value="5">Over 20</option>
+              <option value="10">Over 30</option>
+              <option value="15">Over 40</option>
+              <option value="15">Over 50</option>
+            </select>
+          </div>
+          {% endif %}
         </div>
-
-        <div class="basis-full md:basis-1/5 p-4">
-          <label for="division" class="text-sm font-medium text-gray-900 block mb-2">Division</label>
-          <select name="division" id="division" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
-            <!-- <option value="">Select</option> -->
-            <option value="A" selected>A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-            <option value="N/A">N/A</option>
-          </select>
-        </div>
-        <div class="basis-full md:basis-1/2 p-4">
-          <label for="male_age_over" class="text-sm font-medium text-gray-900 block mb-2">Age Group (Men's)</label>
-          <select name="male_age_over" id="male_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-            <option value="0" selected>Men's Age Group (if applicable)</option>
-            <option value="0">Open</option>
-            <option value="30">Over 30</option>
-            <option value="40">Over 40</option>
-            <option value="50">Over 50</option>
-          </select>
-        </div>
-        <div class="basis-full md:basis-1/2 p-4">
-          <label for="female_age_over" class="text-sm font-medium text-gray-900 block mb-2">Age Group (Women's)</label>
-          <select name="female_age_over" id="female_age_over" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-            <option value="0" selected>Women's Age Group (if applicable)</option>
-            <option value="0">Open</option>
-            <option value="30">Over 30</option>
-            <option value="40">Over 40</option>
-            <option value="50">Over 50</option>
-          </select>
-        </div>
-        <div class="basis-full md:basis-1/2 p-4">
-          <div>
-            <label for="day_of_week" class="text-sm font-medium text-gray-900 block mb-2">Day of Week</label>
+        {% endblock age_over %}
+        <div id="league-create-section-3" class="flex flex-row flex-wrap items-center w-full">
+          <div class="basis-2/3 md:basis-1/2 md:w-1/2 p-4">
+            <label for="day_of_week" class="text-sm font-medium text-gray-900 block mb-2">Game Day</label>
             <select name="day_of_week" id="day_of_week" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required="">
-              <option value=""selected>Day Games Are Played</option>
               <option value="Sunday">Sunday</option>
               <option value="Monday">Monday</option>
               <option value="Tuesday">Tuesday</option>
@@ -82,7 +86,26 @@
               <option value="Saturday">Saturday</option>
             </select>
           </div>
-          <div class="pt-8">
+          
+          <div class="basis-full md:basis-1/2 p-4">
+            <label for="name" class="text-sm font-medium text-gray-900 block mb-2">Season</label>
+            {% if seasons %}
+            <select name="season_id" id="season_id" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+              <option value="null" selected>Select Season</option>
+              {% for season in seasons %}
+              <option value="{{ season.id }}">{{ season.name }}</option>
+              {% endfor %}
+            </select>
+  
+            {% else %}
+  
+            <p class="text-xs font-medium text-rose_iesl-400">Must create Season before attaching to league.</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div id="league-create-section-4" class="flex flex-col items-left w-full md:w-1/2">
+          <div  class="basis-full md:basis-1/2 p-4"">
             <label for="name" class="text-sm font-medium text-gray-900 block mb-2">League Name</label>
             <input
                   hx-post="/iesl-admin/league/search"
@@ -93,21 +116,7 @@
           </div>
         </div>
 
-        <div class="basis-full md:basis-1/2 p-4">
-          <label for="name" class="text-sm font-medium text-gray-900 block mb-2">Season</label>
-          {% if seasons %}
-          <select name="season_id" id="season_id" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-            <option value="null" selected>Select Season</option>
-            {% for season in seasons %}
-            <option value="{{ season.id }}">{{ season.name }}</option>
-            {% endfor %}
-          </select>
-
-          {% else %}
-
-          <p class="text-xs font-medium text-rose_iesl-400">Must create Season before attaching to league.</p>
-          {% endif %}
-        </div>
+        
         <div
         {% block confirmation_buttons %}
         <div  id="create-cancel" class="flex flex-col items-center pt-20 w-full">

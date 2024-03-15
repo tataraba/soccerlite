@@ -158,6 +158,19 @@ class AdminLeagueController(Controller):
             pass
         return Redirect(path=urls.ADMIN_LEAGUE)
 
+    @get(
+        [urls.ADMIN_LEAGUE_AGE_OVER],
+        status_code=HTTPStatus.OK,
+        name="get_league_age_over",
+    )
+    async def get_league_age_over(self, category: str) -> Template:
+        print(category)
+        return htmx_template(
+            template_name="admin/partials/league-create.html",
+            context={"category": category},
+            block_name="age_over",
+        )
+
     @post(
         [urls.ADMIN_LEAGUE_SEARCH],
         status_code=HTTPStatus.OK,
