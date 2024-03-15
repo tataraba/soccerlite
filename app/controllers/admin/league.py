@@ -1,30 +1,26 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Annotated
-from uuid import UUID
 
 from advanced_alchemy.exceptions import ConflictError, NotFoundError
-from litestar import Controller, delete, get, patch, post
+from litestar import Controller, delete, get, post
 from litestar.contrib.htmx.request import HTMXRequest
 from litestar.datastructures import CacheControlHeader
-from litestar.dto import DataclassDTO
 from litestar.enums import RequestEncodingType
 from litestar.params import Body
 from litestar.response import Redirect, Template
 
 from app.controllers import urls
 from app.core.response import htmx_template
-from app.dto import LeagueCreateDTO, LeagueUpdateDTO, SeasonCreateDTO, SeasonUpdateDTO
-from app.models import League, Season
+from app.dto import LeagueCreateDTO, LeagueUpdateDTO
+from app.models import League
 from app.services import (
     provide_league_repo,
     provide_league_service,
     provide_season_repo,
-    provide_season_service,
 )
-from app.services.iesl import LeagueRepo, LeagueService, SeasonRepo, SeasonService
+from app.services.iesl import LeagueRepo, LeagueService, SeasonRepo
 
 
 class AdminLeagueController(Controller):
@@ -63,15 +59,15 @@ class AdminLeagueController(Controller):
         self, request: HTMXRequest, season_repo: SeasonRepo
     ) -> Template:
         seasons = await season_repo.list()
+        block_name = None
+
         if request.htmx:
-            return htmx_template(
-                template_name="admin/partials/league-create.html",
-                context={"seasons": seasons},
-                block_name="admin_panel",
-            )
+            block_name = "admin_panel"
+
         return htmx_template(
             template_name="admin/partials/league-create.html",
             context={"seasons": seasons},
+            block_name=block_name,
         )
 
     @post(
