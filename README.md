@@ -3,11 +3,11 @@
 Hi! This repo is the backbone of a web app I am building for my local amateur soccer league. It is built using the [Litestar web framework](https://litestar.dev), and utilizes the [PyHAT](https://github.com/PyHAT-stack/awesome-python-htmx) stack. What this means is that the frontend is mostly handled by HTML and [htmx](https://htmx.org)*, and styling is included using [TailwindCSS](https://tailwindcss.com). Keep in mind that this site is being built specifically for the _Inland Empire Soccer League_, but you might be able to adapt it to your own purposes with some tweaks.
 
 >**Note** Under the hood:
-> Minimal JavaScript is included using Alpine JS and the flatpickr (date selection) library.
+> Minimal JavaScript is used for date selection, using Alpine JS and the flatpickr library.
 
 ## Getting Started
 
-Feel free to clone the repo. I use PDM as my package manager. Once you navigate to the project folder, you may be able to set metadata by using the `pdm init` command. This will also create your `.venv` virtual environment. You can the use the `pdm install` command to install the necessary dependencies.
+Feel free to clone the repo. I use PDM as my package manager. Once you navigate to the project folder, you may be able to set metadata by using the `pdm init` command. This will also create your `.venv` virtual environment. You can then use the `pdm install` command to install the necessary dependencies.
 
 However, I also have included a `requirements.txt` file in case you are not using PDM. If that is the case, after cloning the project, create a virtual environment first, then activate it:
 
