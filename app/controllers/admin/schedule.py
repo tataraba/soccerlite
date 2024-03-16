@@ -85,15 +85,13 @@ class AdminScheduleController(Controller):
         self, league_repo: LeagueRepo, request: HTMXRequest
     ) -> Template:
         leagues_without_schedule = await league_repo.list_without_schedule()
+        block_name = None
         if request.htmx:
-            return htmx_template(
-                template_name="admin/partials/schedule-create.html",
-                context={"leagues": leagues_without_schedule},
-                block_name="admin_panel",
-            )
+            block_name = "admin_panel"
         return htmx_template(
             template_name="admin/partials/schedule-create.html",
             context={"leagues": leagues_without_schedule},
+            block_name=block_name,
         )
 
     @get(

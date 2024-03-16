@@ -3,13 +3,25 @@
 
 {% block admin_panel %}
 <section id="admin-main-panel" class="flex flex-col w-full min-h-screen">
-  <div class="flex flex-col w-full">
+  <div class="flex flex-row w-full justify-between lg:w-5/6">
     <div class="flex flex-col px-6">
       <h3 id="admin-section-title" class="font-play font-bold text-5xl pt-4 text-sapphire_blue-900">Schedules</h3>
         <ul id="admin-section-options" class="flex flex-row gap-x-6 pt-4">
           <li class="text-spaceteal-200">New schedule</li>
           <!-- <li class="text-spaceteal-200">Edit schedule</li> -->
         </ul>
+    </div>
+    <div id="schedule-instruction" class="flex flex-row flex-wrap pt-4 w-2/5 gap-1">
+      <div class="w-auto uppercase text-xs text-spaceteal-500">Instructions</div>
+      <div class="flex basis-full items-center">
+        <p class="text-xs text-spaceteal-600 w-auto"><span class="font-bold">Total Games</span> defines the number of matches for the season.</p>
+      </div>
+      <div class="flex basis-full items-center">
+        <p class="text-xs text-spaceteal-600 w-auto"><span class="font-bold">Time Allotment</span> is the time (in minutes) between the start of matches.</p>
+      </div>
+      <div class="flex basis-full items-center">
+        <p class="text-xs text-spaceteal-600 w-auto"><span class="font-bold">Concurrent Matches</span> is the number of games that can be played at the same time.</p>
+      </div>
     </div>
   </div>
   <div id="admin-page-content" class="flex flex-col items-center w-full px-2 pt-6 md:pt-14">
@@ -41,7 +53,7 @@
             <input type="text" name="total_games" id="total_games" maxlength="2" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-auto p-2.5" value="10">
           </div>
           <div class="w-auto">
-            <label for="time_between_games" class="text-sm font-medium text-gray-900 block mb-2">Time Between Games (minutes)</label>
+            <label for="time_between_games" class="text-sm font-medium text-gray-900 block mb-2">Time Allotment (minutes)</label>
             <input type="text" name="time_between_games" id="time_between_games" maxlength="2" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-auto p-2.5" value="120">
           </div>
           <div class="w-auto">
@@ -64,8 +76,8 @@
                   })
                 "
               >
-                <label for="scheduled_start" class="text-sm font-medium text-gray-900 block mb-2">Start Date</label>
-                <input name="scheduled_start" id="scheduled_start" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" required=""class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-48 p-2.5" />
+                <label for="scheduled_start" class="text-sm font-medium text-gray-900 block mb-2">Start Date and Time</label>
+                <input name="scheduled_start" id="scheduled_start" x-ref="dateInput" type="text" placeholder="YYYY-MM-DD" required=""class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-56 p-2.5" />
               </div>
             </div>
           </div>
