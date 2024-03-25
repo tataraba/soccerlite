@@ -63,8 +63,8 @@ class Fixture(DatabaseModel):
     referee_a: Mapped[str | None] = mapped_column(String(length=100), default="")
     referee_b: Mapped[str | None] = mapped_column(String(length=100), default="")
 
-    team_home_goals: Mapped[int | None] = mapped_column(Integer(), default=0)
-    team_away_goals: Mapped[int | None] = mapped_column(Integer(), default=0)
+    team_home_goals: Mapped[int | None] = mapped_column(Integer(), default="")
+    team_away_goals: Mapped[int | None] = mapped_column(Integer(), default="")
     mvp: Mapped[str | None] = mapped_column(
         String(length=50), default="", nullable=True
     )

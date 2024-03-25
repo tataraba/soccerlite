@@ -17,74 +17,72 @@
       </div>
     </div>
 
-    <div id="admin-page-content" class="flex flex-col px-2 pt-6 md:pt-14">
-      <div class="flex flex-col items-center w-full px-2">
-        <div class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
-          {% for fixture in fixtures %}
-          <div class="flex flex-row flex-wrap justify-between border-b w-full odd:bg-gray-100 p-2">
-            <div id="fixture-details" class="flex flex-row flex-wrap w-full">
-              <div class="flex flex-row w-full">
-                <p class="font-medium text-xs uppercase text-spaceteal-700 block">Matchday {{ fixture.matchday }}:</p>
-                <p class="text-xs text-spaceteal-400 italic px-2">{{ fixture.game_status }}</p>
-              </div>
-            </div>
-            <div id="fixture-date-time" class="flex flex-col w-2/5">
-              <div class="flex flex-col">
-                <!-- <p class="font-bold">{{ fixture.game_date.strftime("%b %d, %Y") }}</p>
-                <p>{{ fixture.game_date.strftime("%I:%M %p") }}</p> -->
-                <p class="font-bold">{{ utc_to_pst(fixture.game_date).strftime("%b %d, %Y") }}</p>
-                <p>{{ utc_to_pst(fixture.game_date).strftime("%I:%M %p") }}</p>
-              </div>
-              <p>Field {{ fixture.field }}</p>
-              <!-- <p class="text-xs text-spaceteal-300 lowercase italic w-full">{{ fixture.game_status }}</p> -->
-            </div>
-            <div id="fixture-teams" class="flex flex-col w-3/5 self-center uppercase font-bold">
-              <div id="fixture-home-team" class="flex flex-row w-5/6 justify-between">
-                <div class="flex flex-row">
-                  <p class="w-8 font-bold text-spaceteal-500">H</p>
-                  <p>{{ fixture.team_home_name }}</p>
-                </div>
-                {% if fixture.game_status == "Unplayed" or fixture.game_status == "Forfeit" %}
-                <p>{{ fixture.team_home_goals }}</p>
-                {% endif %}
-              </div>
-              <div class="flex flex-row">
-                <div class="w-8 text-spaceteal-500"></div>
-                <p class="text-xs font-normal text-spaceteal-200">vs</p>
-              </div>
-              <div id="fixture-away-team" class="flex flex-row w-5/6 justify-between">
-                <div class="flex flex-row">
-                  <p class="w-8 font-bold text-spaceteal-500">A</p>
-                  <p>{{ fixture.team_away_name }}</p>
-                </div>
-                {% if fixture.game_status == "Unplayed" or fixture.game_status == "Forfeit" %}
-                <p>{{ fixture.team_away_goals }}</p>
-                {% endif %}
-              </div>
-            </div>
-            <div id="fixture-details" class="flex flex-row flex-wrap w-full">
-              <div class="flex flex-row w-full">
-                <p class="font-medium text-xs uppercase text-spaceteal-600">Officials:</p>
-                {% if not fixture.referee_a and not fixture.referee_b %}
-                <p class="text-xs text-spaceteal-400 italic pl-2">Not Listed</p>
-                {% else %}
-                <p class="text-xs text-spaceteal-400 px-1">{{ fixture.referee_a }}</p>
-                <span class="text-xs px-1">&#9830;</span>
-                <p class="text-xs text-spaceteal-400 px-1">{{ fixture.referee_b }}</p>
-                {% endif %}
-              </div>
-              {% if fixture.mvp %}
-              <div class="flex flex-row">
-                <p class="font-medium text-xs uppercase text-spaceteal-600">MVP:</p>
-                
-                <p class="text-xs text-spaceteal-400 italic pl-2">Walter Supercalafragilistic</p>
-              </div>
-              {% endif %}
-            </div>
+<div id="admin-page-content" class="flex flex-col px-2 pt-6 md:pt-14">
+  <div class="flex flex-col items-center w-full px-2">
+    <div class="flex flex-auto flex-row flex-wrap justify-between w-full max-w-screen-md bg-slate-100 border rounded-md">
+      {% for fixture in fixtures %}
+      <div class="flex flex-row flex-wrap justify-between border-b w-full odd:bg-gray-100 p-2">
+        <div id="fixture-details" class="flex flex-row flex-wrap w-full">
+          <div class="flex flex-row w-full">
+            <p class="font-medium text-xs uppercase text-spaceteal-700 block">Matchday {{ fixture.matchday }}:</p>
+            <p class="text-xs text-spaceteal-400 italic px-2">{{ fixture.game_status }}</p>
           </div>
-          {% endfor %}
+        </div>
+        <div id="fixture-date-time" class="flex flex-col w-2/5">
+          <div class="flex flex-col">
+            <p class="font-bold">{{ utc_to_pst(fixture.game_date).strftime("%b %d, %Y") }}</p>
+            <p>{{ utc_to_pst(fixture.game_date).strftime("%I:%M %p") }}</p>
+            <!-- <p>{{ fixture.game_date.strftime("%b %d, %Y") }}</p>
+            <p>{{ fixture.game_date.strftime("%I:%M %p") }}</p> -->
+          </div>
+          <p>Field {{ fixture.field }}</p>
+        </div>
+        <div id="fixture-teams" class="flex flex-col w-3/5 self-center uppercase font-bold">
+          <div id="fixture-home-team" class="flex flex-row w-5/6 justify-between">
+            <div class="flex flex-row">
+              <p class="w-8 font-bold text-spaceteal-500">H</p>
+              <p>{{ fixture.team_home_name }}</p>
+            </div>
+            {% if fixture.game_status == "Unplayed" or fixture.game_status == "Forfeit" %}
+            <p>{{ fixture.team_home_goals }}</p>
+            {% endif %}
+          </div>
+          <div class="flex flex-row">
+            <div class="w-8 text-spaceteal-500"></div>
+            <p class="text-xs font-normal text-spaceteal-200">vs</p>
+          </div>
+          <div id="fixture-away-team" class="flex flex-row w-5/6 justify-between">
+            <div class="flex flex-row">
+              <p class="w-8 font-bold text-spaceteal-500">A</p>
+              <p>{{ fixture.team_away_name }}</p>
+            </div>
+            {% if fixture.game_status == "Unplayed" or fixture.game_status == "Forfeit" %}
+            <p>{{ fixture.team_away_goals }}</p>
+            {% endif %}
+          </div>
+        </div>
+        <div id="fixture-details" class="flex flex-row flex-wrap w-full">
+          <div class="flex flex-row w-full">
+            <p class="font-medium text-xs uppercase text-spaceteal-600">Officials:</p>
+            {% if not fixture.referee_a and not fixture.referee_b %}
+            <p class="text-xs text-spaceteal-400 italic pl-2">Not Listed</p>
+            {% else %}
+            <p class="text-xs text-spaceteal-400 px-1">{{ fixture.referee_a }}</p>
+            <span class="text-xs px-1">&#9830;</span>
+            <p class="text-xs text-spaceteal-400 px-1">{{ fixture.referee_b }}</p>
+            {% endif %}
+          </div>
+          {% if fixture.mvp %}
+          <div class="flex flex-row">
+            <p class="font-medium text-xs uppercase text-spaceteal-600">MVP:</p>
+            <p class="text-xs text-spaceteal-400 italic pl-2">Walter Supercalafragilistic</p>
+          </div>
+          {% endif %}
         </div>
       </div>
+      {% endfor %}
     </div>
+  </div>
+</div>
   </section>
   {% endblock %}

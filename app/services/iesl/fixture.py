@@ -1,6 +1,7 @@
 import logging
 from collections import deque
 from datetime import datetime, timedelta
+from itertools import chain
 from random import shuffle
 from typing import Any
 from uuid import UUID
@@ -114,60 +115,127 @@ class FixtureTeamService(SQLAlchemyAsyncRepositoryService[models.FixtureTeam]):
         self,
         schedule: models.Schedule,
         teams: list[models.Team],
-        start_date: datetime | None = None,
+        shuffle_teams: bool = False,
         **kwargs: Any,
     ):
-        """
-        Generate fixtures for a schedule taking the number
-        of games from the schedule, as well as the teams
-        that are registered to the league.
-        """
-        if not start_date:
-            start_date = datetime.now()
-        if len(teams) % 2 != 0:
-            teams.append(models.Team(name="BYE", league_id=schedule.league_id))
-
-        shuffle(teams)  # Randomizes matchups to vary between seasons
-        home, away = split_list(teams)
-        flatten_teams = deque(away)
-        flatten_teams.extend(reversed(home))
-        anchor_team = flatten_teams.pop()
         fixtures = []
-        fixture_teams = []
-        # First matchday, create fixtures based on "zipping" the home and away teams
-        for matchday in range(len(teams) - 1):
-            if matchday == 0:
-                matches = list(zip(home, away, strict=True))
-                _fixtures, _fixture_teams = matchday_fixtures(
-                    matches=matches,
-                    schedule=schedule,
-                    matchday=matchday + 1,
-                    matchday_date=start_date,
-                )
+        round_number = 1
+        if shuffle_teams:
+            # Randomizes matchups to vary between seasons
+            shuffle(teams)
+        teams = add_bye_week_team(schedule, teams)
+        matches_per_round = len(teams) - 1
+
+        rounds, remaining = divmod(schedule.total_games, matches_per_round)
+
+        for matchday in range(schedule.total_games):
+            round_number = matchday // matches_per_round
+            logging.info(f"round_number: {round_number}")
+            if round_number < rounds:
+                round_number = round_number + 1
+                _fixtures = create_fixtures(schedule, teams, matchday, round_number)
                 fixtures.extend(_fixtures)
-                fixture_teams.extend(_fixture_teams)
-            # Subsequent matchdays, create fixtures based on the rotation of the teams
+            elif remaining and round_number == rounds:
+                logging.info(f"This is for remaining games {remaining=}")
+                # CREATE FIXTURES FOR PLAYOFF GAMES
+                break
             else:
-                matches = rotate_and_match_teams(anchor_team, flatten_teams)
-                shuffle(matches)  # Randomizes start times for matches
-                start_date = weekly_increment(start_date=start_date)
-                _fixtures, _fixture_teams = matchday_fixtures(
-                    matches=matches,
-                    schedule=schedule,
-                    matchday=matchday + 1,
-                    matchday_date=start_date,
-                )
-                fixtures.extend(_fixtures)
-                fixture_teams.extend(_fixture_teams)
-                flatten_teams.pop()
+                logging.info("outside of defined set")
+                pass
 
-        await self.create_many(fixture_teams, auto_commit=True, auto_expunge=True)
-
-        return fixtures, fixture_teams
+        _ = await self.create_many(fixtures, auto_commit=True, auto_expunge=True)
+        return fixtures
 
 
-def split_list(list_to_split: list[Any]) -> tuple[list[Any], list[Any]]:
-    """Split a list in half, raising an error if the list is odd."""
+def create_fixtures(
+    schedule: models.Schedule,
+    teams: list[models.Team],
+    matchday: int,
+    round_number: int,
+):
+    fixtures = []
+    rotate = True
+    if matchday == 0:
+        rotate = False
+
+    matchups = create_matchups(teams=teams, matchday=matchday, rotate=rotate)
+
+    for count, match in enumerate(matchups, start=1):
+        field = determine_field(schedule=schedule, count=count)
+        team_home, team_away = home_or_away(round_number=round_number, match=match)
+        game_date = weekly_increment(schedule=schedule, num_weeks=matchday)
+        game_date_time = determine_time(
+            schedule=schedule,
+            start_time=game_date,
+            count=count,
+            match_count=len(matchups),
+        )
+
+        fixture = models.Fixture(
+            schedule_id=schedule.id,
+            team_home=team_home.id,
+            team_away=team_away.id,
+            matchday=matchday + 1,
+            game_date=game_date_time,
+            field=field,
+            game_status=models.FixtureStatus.UNPLAYED,
+        )
+
+        fixtures.append(fixture)
+    return fixtures
+
+
+def create_matchups(
+    teams: list[models.Team], matchday: int, rotate: bool = False
+) -> list[tuple[models.Team, models.Team]]:
+    home, away = split_list(list_to_split=teams)
+    matchups = list(zip(home, away, strict=True))
+    if rotate:
+        logging.info(f"rotating by {matchday}")
+        _teams = deque(chain(*matchups))
+        anchor = _teams.popleft()
+        _teams.rotate(matchday)
+        _teams.appendleft(anchor)
+        home, away = split_list([*_teams])
+        matchups = list(zip(home, away, strict=True))
+    return matchups
+
+
+def home_or_away(
+    match: tuple[models.Team, models.Team],
+    round_number: int,
+):
+    if round_number % 2 == 0:
+        logging.info(
+            f"Round {round_number} is even: H {match[0].name} vs. A {match[1].name}"
+        )
+        team_home = match[0]
+        team_away = match[1]
+    else:
+        logging.info(
+            f"Round {round_number} is odd: H {match[1].name} vs. A {match[0].name}"
+        )
+        team_home = match[1]
+        team_away = match[0]
+    return team_home, team_away
+
+
+def add_bye_week_team(
+    schedule: models.Schedule, teams: list[models.Team]
+) -> list[models.Team]:
+    """
+    If number of teams is odd, create a "Bye" team to ensure scheduling
+    accounts for a bye week.
+    """
+    if len(teams) % 2 != 0:
+        teams.append(models.Team(name="BYE", league_id=schedule.league_id))
+    return teams
+
+
+def split_list(
+    list_to_split: list[models.Team]
+) -> tuple[list[models.Team], list[models.Team]]:
+    """Split a list of teams in half, raising an error if the list is odd."""
     if len(list_to_split) % 2 != 0:
         raise ValueError("List length must be even.")
 
@@ -177,102 +245,25 @@ def split_list(list_to_split: list[Any]) -> tuple[list[Any], list[Any]]:
     )
 
 
-def weekly_increment(start_date: datetime, num_weeks: int = 1) -> datetime:
-    if num_weeks:
-        increment_by = num_weeks
-    return start_date + timedelta(weeks=increment_by)
+def weekly_increment(schedule: models.Schedule, num_weeks: int = 1) -> datetime:
+    if not num_weeks:
+        return schedule.scheduled_start
+    increment_by = num_weeks
+    return schedule.scheduled_start + timedelta(weeks=increment_by)
 
 
-def game_date_start(game_time: datetime, minute_increment: int) -> datetime:
-    if minute_increment:
-        game_time = game_time + timedelta(minutes=minute_increment)
-        return game_time
-    return game_time
+def determine_time(
+    schedule: models.Schedule, start_time: datetime, count: int, match_count: int
+):
+    if count == 1 or count <= schedule.concurrent_games:
+        return start_time
+    minute_increment = schedule.time_between_games * (count - 1)
+    return start_time + timedelta(minutes=minute_increment)
 
 
-def determine_field(schedule: models.Schedule, field: int, match_count: int) -> int:
-    if match_count == 1 or match_count > schedule.concurrent_games:
-        return field
-    else:
-        return field + 1
-
-
-def determine_match_start_time(
-    schedule: models.Schedule,
-    matchday_date: datetime,
-    match_count: int,
-) -> datetime:
-    if match_count <= schedule.concurrent_games:
-        logging.info(
-            f"Matchday date: {matchday_date}, match_count: {match_count} less than concurrent games: {schedule.concurrent_games}"
-        )
-        return matchday_date
-    minute_increment = schedule.time_between_games * match_count
-    logging.info(
-        f"match count is equal or greater than concurrent games, adding {minute_increment} minutes"
-    )
-    return matchday_date + timedelta(minutes=minute_increment)
-
-
-def rotate_and_match_teams(
-    anchor_team: models.Team, team_bucket: deque
-) -> list[tuple[models.Team, models.Team]]:
-    """
-    To create a list of matches for a particular match day, provide the `anchor_team`
-    which should not be included in the `team_bucket` deque of teams that are to be scheduled.
-    The `team_bucket` will be rotated once, and then the `anchor_team` will be appended. Next,
-    the deque will be split in half, and the matches will be generated by zipping the two
-    resulting lists.
-
-    Args:
-        anchor_team (str): The team that should not be included in the `team_bucket` deque.
-        team_bucket (deque): The deque of teams that are to be scheduled.
-    """
-    team_bucket.rotate()
-    team_bucket.rotate()
-    team_bucket.append(anchor_team)
-    home, away = split_list(list(team_bucket))
-    away.reverse()
-    return list(zip(home, away, strict=True))
-
-
-def matchday_fixtures(
-    *,
-    matches: list[tuple[models.Team, models.Team]],
-    schedule: models.Schedule,
-    matchday: int,
-    matchday_date: datetime,
-) -> tuple[list[models.Fixture], list[models.FixtureTeam]]:
-    fixtures = []
-    fixture_teams = []
-    field = 1
-
-    for count, match in enumerate(matches, start=1):
-        logging.info(
-            f"count: {count}, matchday: {matchday}, conc: {schedule.concurrent_games}"
-        )
-        game_date = determine_match_start_time(
-            schedule=schedule, matchday_date=matchday_date, match_count=count
-        )
-        field = determine_field(schedule=schedule, field=field, match_count=count)
-        logging.info(f"field: {field} - game_date: {game_date}")
-        fixture = models.Fixture(
-            schedule_id=schedule.id,
-            team_home=match[0].id,
-            team_away=match[1].id,
-            # team_home_name=match[0].name,
-            # team_away_name=match[1].name,
-            matchday=matchday,
-            game_date=game_date,
-            field=field,
-            game_status=models.FixtureStatus.UNPLAYED,
-        )
-
-        fixture_team_home = models.FixtureTeam(team=match[0], fixture=fixture)
-        fixture_team_away = models.FixtureTeam(team=match[1], fixture=fixture)
-        fixture_teams.extend([fixture_team_home, fixture_team_away])
-
-        fixture.fixture_teams.extend([fixture_team_home, fixture_team_away])
-        fixtures.append(fixture)
-
-    return fixtures, fixture_teams
+def determine_field(
+    schedule: models.Schedule, count: int, initial_field: int = 1
+) -> int:
+    if count == 1 or count > schedule.concurrent_games:
+        return initial_field
+    return initial_field + count - 1

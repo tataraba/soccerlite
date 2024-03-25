@@ -1,8 +1,10 @@
+import logging
 import re
 import unicodedata
-from datetime import datetime
+from datetime import datetime, timezone
 from importlib.util import find_spec
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from dateutil import tz
 
@@ -49,7 +51,7 @@ def slugify(
 
 
 def convert_utc_to_pst(utc_datetime: datetime) -> datetime:
-    pst_timezone = tz.gettz("America/Los_Angeles")
-    localized_datetime = utc_datetime.replace(tzinfo=tz.tzutc())
-    converted_datetime = localized_datetime.astimezone(pst_timezone)
-    return converted_datetime
+    LOS_ANGELES = tz.gettz("America/Los_Angeles")
+    _utc_datetime = utc_datetime.replace(tzinfo=timezone.utc)
+    converted_datetime = _utc_datetime.astimezone(LOS_ANGELES)
+    return converted_datetime.replace(fold=1)

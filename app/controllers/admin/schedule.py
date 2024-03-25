@@ -152,7 +152,6 @@ class AdminScheduleController(Controller):
         team_service: TeamService,
         data: Annotated[Schedule, Body(media_type=RequestEncodingType.URL_ENCODED)],
     ) -> Redirect | None:
-        request.logger.info(f"Let's see data: {data}")
         try:
             teams = await team_service.list_from_league(league_id=data.league_id)
             if not teams:
@@ -214,15 +213,15 @@ class AdminScheduleController(Controller):
         team_repo: TeamRepo,
         slug: str,
     ) -> Template:
-        schedule_data = await schedule_repo.get_by_slug(slug)
-        if schedule_data:
-            fixtures = await fixture_repo.list_from_schedule(
-                schedule_id=schedule_data.id
-            )
+        schedule = await schedule_repo.get_by_slug(slug)
+        if schedule:
+            fixtures = await fixture_repo.list_from_schedule(schedule_id=schedule.id)
+            teams = await team_repo.list(league_id=schedule.league_id)
 
         context = {
-            "schedule": schedule_data,
+            "schedule": schedule,
             "fixtures": fixtures,
+            "teams": teams,
             "utc_to_pst": convert_utc_to_pst,
         }
         block_name = None
