@@ -30,7 +30,7 @@ from app.services import (
     provide_league_repo,
     provide_schedule_repo,
     provide_schedule_service,
-    provide_standings_repo,
+    provide_standings_service,
     provide_team_repo,
     provide_team_service,
 )
@@ -41,7 +41,7 @@ from app.services.iesl import (
     LeagueRepo,
     ScheduleRepo,
     ScheduleService,
-    StandingsRepo,
+    StandingsService,
     TeamRepo,
     TeamService,
 )
@@ -143,7 +143,7 @@ class AdminScheduleController(Controller):
             "schedule_service": provide_schedule_service,
             "fixture_team_service": provide_fixture_team_service,
             "team_service": provide_team_service,
-            "standings_repo": provide_standings_repo,
+            "standings_service": provide_standings_service,
         },
     )
     async def post_schedule_create(
@@ -152,7 +152,7 @@ class AdminScheduleController(Controller):
         schedule_service: ScheduleService,
         fixture_team_service: FixtureTeamService,
         team_service: TeamService,
-        standings_repo: StandingsRepo,
+        standings_service: StandingsService,
         data: Annotated[Schedule, Body(media_type=RequestEncodingType.URL_ENCODED)],
     ) -> Redirect | None:
         try:
@@ -163,13 +163,15 @@ class AdminScheduleController(Controller):
                 data=data, auto_commit=True
             )  # write to database
 
-            _ = await standings_repo.add(
-                Standings(
-                    league_id=data.league_id,
-                    schedule_id=schedule.id,
-                    teams=teams,
+            for team in teams:
+                await standings_service.create(
+                    data={
+                        "name": f"{team.name} Standings",
+                        "team_id": team.id,
+                        "schedule_id": schedule.id,
+                        "season_id": schedule.season_id,
+                    }
                 )
-            )
 
             _ = await fixture_team_service.generate_fixtures(
                 schedule=schedule,
