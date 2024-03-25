@@ -24,6 +24,9 @@ class Team(DatabaseModel, SlugKey):
     league_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("league.id", ondelete="cascade"),
     )
+    standings_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("standings.id", ondelete="cascade"),
+    )
 
     name: Mapped[str] = mapped_column(String(length=100), unique=True)
     uniform_color: Mapped[str] = mapped_column(String(length=100), default="")
