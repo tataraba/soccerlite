@@ -5,7 +5,7 @@ from collections.abc import AsyncGenerator
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import Fixture, FixtureTeam, League, Schedule, Season, Team
+from app.models import Fixture, FixtureTeam, League, Schedule, Season, Standings, Team
 
 from .iesl import (
     FixtureRepo,
@@ -18,6 +18,8 @@ from .iesl import (
     ScheduleService,
     SeasonRepo,
     SeasonService,
+    StandingsRepo,
+    StandingsService,
     TeamRepo,
     TeamService,
 )
@@ -45,6 +47,10 @@ async def provide_fixture_teams_repo(db_session: AsyncSession) -> FixtureTeamRep
 
 async def provide_schedule_repo(db_session: AsyncSession) -> ScheduleRepo:
     return ScheduleRepo(session=db_session, statement=select(Schedule))
+
+
+async def provide_standings_repo(db_session: AsyncSession) -> StandingsRepo:
+    return StandingsRepo(session=db_session, statement=select(Standings))
 
 
 async def provide_season_service(
@@ -96,6 +102,15 @@ async def provide_schedule_service(
     db_session: AsyncSession | None = None
 ) -> AsyncGenerator[ScheduleService, None]:
     async with ScheduleService.new(
+        session=db_session,
+    ) as service:
+        yield service
+
+
+async def provide_standings_service(
+    db_session: AsyncSession | None = None
+) -> AsyncGenerator[StandingsService, None]:
+    async with StandingsService.new(
         session=db_session,
     ) as service:
         yield service

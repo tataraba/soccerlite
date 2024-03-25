@@ -2,6 +2,7 @@ from .fixture import FixtureRepo, FixtureService, FixtureTeamRepo, FixtureTeamSe
 from .league import LeagueRepo, LeagueService
 from .schedule import ScheduleRepo, ScheduleService
 from .season import SeasonRepo, SeasonService
+from .standings import StandingsRepo, StandingsService
 from .team import TeamRepo, TeamService
 
 __all__ = [
@@ -17,4 +18,6 @@ __all__ = [
     "FixtureTeamService",
     "ScheduleRepo",
     "ScheduleService",
+    "StandingsRepo",
+    "StandingsService",
 ]

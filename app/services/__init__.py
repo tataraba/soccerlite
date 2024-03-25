@@ -17,6 +17,8 @@ from .dependencies import (
     provide_schedule_service,
     provide_season_repo,
     provide_season_service,
+    provide_standings_repo,
+    provide_standings_service,
     provide_team_repo,
     provide_team_service,
 )
@@ -40,4 +42,6 @@ __all__ = [
     "provide_fixture_teams_repo",
     "provide_schedule_repo",
     "provide_schedule_service",
+    "provide_standings_repo",
+    "provide_standings_service",
 ]

@@ -17,16 +17,15 @@ __all__ = ["Standings"]
 
 
 class Standings(DatabaseModel):
-
     __table_args__ = {"comment": "Inland Empire Scores League Standings"}
 
     schedule_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("schedule.id", ondelete="cascade"),
     )
-    team_id: Mapped[UUID | None] = mapped_column(
-        ForeignKey("team.id", ondelete="set null"),
+    season_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("season.id", ondelete="cascade")
     )
-    season: Mapped[String] = mapped_column(String(length=100), default="")
+
     games_played: Mapped[int] = mapped_column(Integer(), default=0)
     games_won: Mapped[int] = mapped_column(Integer(), default=0)
     games_drawn: Mapped[int] = mapped_column(Integer(), default=0)
