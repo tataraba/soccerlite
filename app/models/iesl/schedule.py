@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from uuid import UUID
 
@@ -46,7 +46,7 @@ class Schedule(DatabaseModel, SlugKey):
         ForeignKey("season.id", ondelete="cascade"),
     )
     scheduled_start: Mapped[datetime] = mapped_column(
-        DateTime(), nullable=False, default=datetime.utcnow()
+        DateTime(), nullable=False, default=datetime.now(UTC)
     )
     total_games: Mapped[int] = mapped_column(Integer(), default=10, nullable=False)
     time_between_games: Mapped[int] = mapped_column(Integer(), default=60)
