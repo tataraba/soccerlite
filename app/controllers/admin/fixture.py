@@ -114,7 +114,7 @@ class AdminFixtureController(Controller):
         data: Annotated[Fixture, Body(media_type=RequestEncodingType.URL_ENCODED)],
     ) -> Template | Redirect:
         fixtures = []
-        request.logger.info(f"{data.to_dict()=}")
+
         try:
             fixture = await fixture_service.update(
                 data=data.to_dict(), item_id=data.id, auto_commit=True
@@ -133,8 +133,8 @@ class AdminFixtureController(Controller):
             "fixtures": fixtures,
             "teams": teams,
             "game_status": FixtureStatus,
-            "utc_to_pst": convert_utc_to_pst,
             "field": Field,
+            "utc_to_pst": convert_utc_to_pst,
             "updated": True,
         }
         return htmx_template(
