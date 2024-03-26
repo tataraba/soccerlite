@@ -52,22 +52,15 @@ class Fixture(DatabaseModel):
     team_away: Mapped[UUID | None] = mapped_column(
         ForeignKey("team.id", ondelete="set null"),
     )
-    # team_home: Mapped[str | None] = mapped_column(ForeignKey("team.name"), default="")
-    # team_away: Mapped[str | None] = mapped_column(ForeignKey("team.name"), default="")
 
     matchday: Mapped[int] = mapped_column(Integer())
     game_date: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
-    # team_home_name: Mapped[str | None] = mapped_column(String(length=100), default="")
-    # team_away_name: Mapped[str | None] = mapped_column(String(length=100), default="")
     field: Mapped[Field] = mapped_column(Integer())
     referee_a: Mapped[str | None] = mapped_column(String(length=100), default="")
     referee_b: Mapped[str | None] = mapped_column(String(length=100), default="")
-
     team_home_goals: Mapped[int | None] = mapped_column(Integer(), default="")
     team_away_goals: Mapped[int | None] = mapped_column(Integer(), default="")
-    mvp: Mapped[str | None] = mapped_column(
-        String(length=50), default="", nullable=True
-    )
+    mvp: Mapped[str | None] = mapped_column(String(length=50), default="")
     game_status: Mapped[FixtureStatus] = mapped_column(
         String(length=20), default=FixtureStatus.UNPLAYED
     )
