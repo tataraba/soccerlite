@@ -16,7 +16,7 @@ class WebController(Controller):
         include_in_schema=False,
     )
     async def home(self, request: HTMXRequest) -> Template:
-        return htmx_template(template_name="main2.html")
+        return htmx_template(template_name="main.html")
 
     # @get(
     #     [urls.ACCOUNT_LOGIN],
