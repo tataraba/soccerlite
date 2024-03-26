@@ -317,15 +317,25 @@ class AdminScheduleController(Controller):
         [urls.ADMIN_SCHEDULE_DELETE],
         status_code=HTTPStatus.CREATED,
         name="delete_schedule",
-        dependencies={"schedule_repo": provide_schedule_repo},
+        dependencies={
+            "schedule_repo": provide_schedule_repo,
+            "standings_service": provide_standings_service,
+        },
     )
     async def delete_schedule(
         self,
         request: HTMXRequest,
         schedule_repo: ScheduleRepo,
+        standings_service: StandingsService,
     ) -> Template:
         if request.headers.get("schedule_id"):
-            _ = await schedule_repo.delete(item_id=request.headers.get("schedule_id"))
+            schedule = await schedule_repo.delete(
+                item_id=request.headers.get("schedule_id")
+            )
+            standings = await standings_service.list(schedule_id=schedule.id)
+            _to_delete = [s.id for s in standings]
+            await standings_service.delete_many(_to_delete, auto_expunge=True)
+
         schedules = await schedule_repo.list()
 
         return htmx_template(

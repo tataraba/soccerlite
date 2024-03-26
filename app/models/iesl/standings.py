@@ -42,6 +42,8 @@ class Standings(DatabaseModel, SlugKey):
 
     # ORM
 
-    schedule: Mapped["Schedule"] = relationship(back_populates="standings")
+    schedule: Mapped["Schedule"] = relationship(
+        back_populates="standings", cascade="all, delete"
+    )
     team: Mapped[list["Team"]] = relationship(back_populates="standings")
     team_name: AssociationProxy[str] = association_proxy("team", "name")

@@ -45,6 +45,7 @@ class Schedule(DatabaseModel, SlugKey):
     season_id: Mapped[UUID] = mapped_column(
         ForeignKey("season.id", ondelete="cascade"),
     )
+
     scheduled_start: Mapped[datetime] = mapped_column(
         DateTime(), nullable=False, default=datetime.now(UTC)
     )
@@ -65,4 +66,6 @@ class Schedule(DatabaseModel, SlugKey):
     )
     season_name: AssociationProxy[str] = association_proxy("season", "name")
     fixtures: Mapped[list["Fixture"]] = relationship(back_populates="schedule")
-    standings: Mapped["Standings"] = relationship(back_populates="schedule")
+    standings: Mapped["Standings"] = relationship(
+        back_populates="schedule", cascade="all, delete-orphan"
+    )
