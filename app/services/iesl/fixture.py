@@ -1,13 +1,13 @@
 import logging
 from collections import deque
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from itertools import chain
 from random import shuffle
 from typing import Any
 from uuid import UUID
 
 from advanced_alchemy import FilterTypes
-from advanced_alchemy.filters import OrderBy
+from advanced_alchemy.filters import BeforeAfter, OrderBy
 from sqlalchemy import select
 
 from app import models
@@ -26,6 +26,30 @@ __all__ = [
 
 class FixtureRepo(SQLAlchemyAsyncSlugRepository[models.Fixture]):
     model_type = models.Fixture
+
+    async def upcoming_fixtures(self, *filters: FilterTypes, **kwargs: Any):
+        statement = (
+            (
+                select(models.Fixture, models.League)
+                .join_from(models.Fixture, models.Schedule)
+                .join_from(models.Schedule, models.League)
+            )
+            .filter(
+                models.Fixture.game_date.between(
+                    datetime.now(UTC), datetime.now(UTC) + timedelta(days=6)
+                )
+            )
+            .order_by(
+                models.League.name,
+                models.Fixture.game_date,
+                models.Fixture.field,
+            )
+        )
+
+        fixtures = await self.session.execute(
+            statement=statement,
+        )
+        return fixtures.all()
 
     async def list_from_schedule(
         self,

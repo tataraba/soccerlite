@@ -1,0 +1,58 @@
+{% extends "/shared/base.html" %}
+
+
+{% block content %}
+
+<section id="main-content" class="text-gray-600 body-font min-w-[425px]">
+  <div class="container px-5 py-2 mx-auto">
+    <!-- Schedule Select-->
+    <div class="md:mb-5 md:pt-4">
+      <h2 class="sm:text-2xl text-xl font-play uppercase title-font text-spaceteal-100 inline-block rounded px-6 bg-sapphire_blue-800 mb-2">Schedules</h2>
+      <select name="league_id" id="league_id" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-auto p-2.5">
+        <option value="null" selected>Jump to</option>
+        {% for league in leagues %}
+        <option value="{{ league.id }}">{{ league.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <!-- Upcoming Game Cards-->
+    <div class="flex flex-col flex-nowrap justify-around md:space-y-0 space-y-2">
+        {% for league in leagues %}
+        <div id="upcoming-matches-{{ league.id }}" class="p-4 w-full md:w-1/2 flex flex-col text-center items-center">
+            <table class="table-auto w-full mx-1 text-sm">
+                <caption class="caption-top bg-sapphire_blue-800 px-4 py-1 text-opal-50 text-left rounded-t-md uppercase">
+                <div class="flex flex-col">
+                  <div class="text-base font-bold">{{ league.name }}</div>
+                  <div class="text-sapphire_blue-100">{{ utc_to_pst((rows|selectattr('League.id', 'eq', league.id)|first).Fixture.game_date).strftime("%A - %b %d, %Y") }}</div>
+                </div>
+                </caption>
+                <thead>
+                    <tr class="bg-opal-50 rounded-t-sm text-base text-left">
+                        <th class="px-2">Home</th>
+                        <th class="px-2">Away </th>
+                        <th class="px-2 w-30">Time</th>
+                        <th class="px-2">Field</th>
+                    </tr>
+                </thead>
+                <tbody class="border-b-2">
+                  {% for row in rows %}
+                    {% if row.League.id == league.id %}
+                    <tr class="text-left">
+                        <td class="px-2">{{ row.Fixture.team_home_name }}</td>
+                        <td class="px-2">{{ row.Fixture.team_away_name }}</td> 
+                        <td class="px-2">{{ utc_to_pst(row.Fixture.game_date).strftime("%I:%M %p") }}</td>
+                        <td class="px-2">{{ row.Fixture.field }}</td>
+                    </tr>
+                    {% endif %}
+                   {% endfor %}
+                </tbody>
+            </table>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+
+{% endblock %}

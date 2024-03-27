@@ -1,0 +1,53 @@
+<table class="table-auto w-full mx-1 text-sm">
+    <caption class="caption-top bg-sapphire_blue-800 px-4 py-1 text-opal-50 text-left rounded-t-md uppercase">
+    <div class="flex flex-col">
+      <div class="text-base font-bold">{{ league.name }}</div>
+      <div class="text-sapphire_blue-100">{{ league.day_of_week }}</div>
+    </div>
+        
+    </caption>
+    <thead>
+        <tr class="bg-opal-50 rounded-t-sm text-base text-left">
+            <th class="px-2">Homer</th>
+            <th class="px-2">Away </th>
+            <th class="px-2 w-30">Time</th>
+            <th class="px-2">Field</th>
+        </tr>
+    </thead>
+    <tbody class="border-b-2">
+        {% for result in results %}
+            
+                <tr class="text-left">
+                    <td class="px-2">{{ result }}</td>
+                    <td class="px-2">{{ result.Fixture.team_away }}</td>
+                    <td class="px-2">{{ result.Fixture.game_date }}</td>
+                    <td class="px-2">{{ result.Fixture.field }}</td>
+                </tr>
+            
+        {% endfor %}
+        <tr class="text-left">
+            <td class="px-2">Cylons</td>
+            <td class="px-2">Lions</td>
+            <td class="px-2">8:00 am</td>
+            <td class="px-2">A</td>
+        </tr>
+        <tr class="text-left">
+            <td class="px-2">Benidorm</td>
+            <td class="px-2">Real FC</td>
+            <td class="px-2">10:00 am</td>
+            <td class="px-2">A</td>
+        </tr>
+        <tr class="text-left">
+            <td class="px-2">Fusion</td>
+            <td class="px-2">Real Espana</td>
+            <td class="px-2">12:00 pm</td>
+            <td class="px-2">A</td>
+        </tr>
+        <tr class="text-left">
+            <td class="px-2">Cylon</td>
+            <td class="px-2">Lions</td>
+            <td class="px-2">2:00 pm</td>
+            <td class="px-2">A</td>
+        </tr>
+    </tbody>
+</table>

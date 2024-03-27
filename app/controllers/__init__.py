@@ -9,7 +9,7 @@ from .admin import (
     AdminTeamController,
 )
 from .iesl import LeagueController
-from .index import WebController
+from .web import WebController
 
 __all__ = [
     "routes",

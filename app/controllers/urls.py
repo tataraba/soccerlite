@@ -1,11 +1,14 @@
 # Web Controller URLs
 INDEX = "/"
 SITE_ROOT = "/{path:str}"
+SCHEDULES = "/schedules"
 
 # League Controller URLs
+SCHEDULE_INDEX = "/schedule"
+STANDINGS_INDEX = "/standings"
 LEAGUE_INDEX = "/league"
-LEAGUE_SCHEDULE = "/league/schedule"
-LEAGUE_STANDINGS = "/league/standings"
+LEAGUE_SCHEDULE = "/schedule/{slug:str}"
+LEAGUE_STANDINGS = "/standings/{slug:str}"
 LEAGUE_STATS = "/league/stats"
 
 # Team Controller URLs
