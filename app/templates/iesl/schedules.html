@@ -11,12 +11,18 @@
       <select name="league_id" id="league_id" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-auto p-2.5">
         <option value="null" selected>Jump to</option>
         {% for league in leagues %}
-        <option value="{{ league.id }}">{{ league.name }}</option>
+        <option hx-get="/schedules/{{ league.slug }}"
+                hx-target="#schedule-content"
+                hx-trigger="onclick"
+
+                hx-push-url="true"
+                name="{{ league.slug }}"
+                value="{{ league.slug }}">{{ league.name }}</option>
         {% endfor %}
       </select>
     </div>
     <!-- Upcoming Game Cards-->
-    <div class="flex flex-col flex-nowrap justify-around md:space-y-0 space-y-2">
+    <div id="schedule-content" class="flex flex-col flex-nowrap justify-around md:space-y-0 space-y-2">
         {% for league in leagues %}
         <div id="upcoming-matches-{{ league.id }}" class="p-4 w-full md:w-1/2 flex flex-col text-center items-center">
             <table class="table-auto w-full mx-1 text-sm">

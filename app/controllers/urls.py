@@ -4,7 +4,7 @@ SITE_ROOT = "/{path:str}"
 SCHEDULES = "/schedules"
 
 # League Controller URLs
-SCHEDULE_INDEX = "/schedule"
+SCHEDULE_INDEX = "/schedules"
 STANDINGS_INDEX = "/standings"
 LEAGUE_INDEX = "/league"
 LEAGUE_SCHEDULE = "/schedule/{slug:str}"
