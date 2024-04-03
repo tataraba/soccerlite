@@ -7,6 +7,7 @@ from uuid import UUID
 from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.ext.associationproxy import AssociationProxy, association_proxy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.types import UUID as UUIDType
 from typing_extensions import TYPE_CHECKING
 
 from app.models.base import DatabaseModel
@@ -46,11 +47,18 @@ class Fixture(DatabaseModel):
     schedule_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("schedule.id", ondelete="cascade"),
     )
-    team_home: Mapped[UUID | None] = mapped_column(
-        ForeignKey("team.id", ondelete="set null"),
+    # team_home: Mapped[UUID | None] = mapped_column(
+    #     ForeignKey("team.id", ondelete="set null"),
+    # )
+    # team_away: Mapped[UUID | None] = mapped_column(
+    #     ForeignKey("team.id", ondelete="set null"),
+    # )
+
+    team_home_id: Mapped[UUID | None] = mapped_column(
+        UUIDType(as_uuid=True), nullable=False
     )
-    team_away: Mapped[UUID | None] = mapped_column(
-        ForeignKey("team.id", ondelete="set null"),
+    team_away_id: Mapped[UUID | None] = mapped_column(
+        UUIDType(as_uuid=True), nullable=False
     )
 
     matchday: Mapped[int] = mapped_column(Integer())
@@ -73,7 +81,19 @@ class Fixture(DatabaseModel):
     )
     team_names: AssociationProxy[str] = association_proxy("fixture_teams", "team_name")
     # teams: Mapped["Team"] = relationship()
-    team_home_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_home])
-    team_away_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_away])
-    team_home_name: AssociationProxy[str] = AssociationProxy("team_home_model", "name")
-    team_away_name: AssociationProxy[str] = AssociationProxy("team_away_model", "name")
+    # team_home_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_home])
+    # team_away_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_away])
+    # team_home_name: AssociationProxy[str] = AssociationProxy("team_home_model", "name")
+    # team_away_name: AssociationProxy[str] = AssociationProxy("team_away_model", "name")
+    team_home: Mapped["Team"] = relationship(
+        "Team",
+        primaryjoin="Team.id == Fixture.team_home_id",
+        back_populates="home_team_fixtures",
+        foreign_keys=[team_home_id],
+    )
+    team_away: Mapped["Team"] = relationship(
+        "Team",
+        primaryjoin="Team.id == Fixture.team_away_id",
+        back_populates="away_team_fixtures",
+        foreign_keys=[team_away_id],
+    )

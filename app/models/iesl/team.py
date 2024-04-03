@@ -8,6 +8,8 @@ from typing_extensions import TYPE_CHECKING
 
 from app.models.base import DatabaseModel, SlugKey
 
+from .fixture import Fixture
+
 if TYPE_CHECKING:
     from .fixture_team import FixtureTeam
     from .league import League
@@ -43,3 +45,17 @@ class Team(DatabaseModel, SlugKey):
     league: Mapped["League"] = relationship(back_populates="teams")
     standings: Mapped["Standings"] = relationship(back_populates="team")
     # players: Mapped[list["PlayerTeamLink"]] = relationship(back_populates="team")
+    home_team_fixtures: Mapped[list["Fixture"]] = relationship(
+        primaryjoin="Team.id == Fixture.team_home_id",
+        back_populates="team_home",
+        foreign_keys=[Fixture.team_home_id],
+        lazy="selectin",
+        uselist=True,
+    )
+    away_team_fixtures: Mapped[list["Fixture"]] = relationship(
+        primaryjoin="Team.id == Fixture.team_away_id",
+        back_populates="team_away",
+        foreign_keys=[Fixture.team_away_id],
+        lazy="selectin",
+        uselist=True,
+    )

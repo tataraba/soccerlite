@@ -197,8 +197,8 @@ def create_fixtures(
 
         fixture = models.Fixture(
             schedule_id=schedule.id,
-            team_home=team_home.id,
-            team_away=team_away.id,
+            team_home_id=team_home.id,
+            team_away_id=team_away.id,
             matchday=matchday + 1,
             game_date=game_date_time,
             field=field,
