@@ -81,19 +81,21 @@ class Fixture(DatabaseModel):
     )
     team_names: AssociationProxy[str] = association_proxy("fixture_teams", "team_name")
     # teams: Mapped["Team"] = relationship()
-    # team_home_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_home])
-    # team_away_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_away])
+    # team_home_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_home_id])
+    # team_away_model: Mapped["Team"] = relationship("Team", foreign_keys=[team_away_id])
     # team_home_name: AssociationProxy[str] = AssociationProxy("team_home_model", "name")
     # team_away_name: AssociationProxy[str] = AssociationProxy("team_away_model", "name")
     team_home: Mapped["Team"] = relationship(
         "Team",
         primaryjoin="Team.id == Fixture.team_home_id",
         back_populates="home_team_fixtures",
+        lazy="selectin",
         foreign_keys=[team_home_id],
     )
     team_away: Mapped["Team"] = relationship(
         "Team",
         primaryjoin="Team.id == Fixture.team_away_id",
         back_populates="away_team_fixtures",
+        lazy="selectin",
         foreign_keys=[team_away_id],
     )

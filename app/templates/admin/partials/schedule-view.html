@@ -41,7 +41,7 @@
           <div id="fixture-home-team" class="flex flex-row w-5/6 justify-between">
             <div class="flex flex-row">
               <p class="w-8 font-bold text-spaceteal-500">H</p>
-              <p>{{ fixture.team_home_name }}</p>
+              <p>{{ fixture.fixture_teams }}</p>
             </div>
             {% if fixture.game_status == "Unplayed" or fixture.game_status == "Forfeit" %}
             <p>{{ fixture.team_home_goals }}</p>
